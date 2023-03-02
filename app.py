@@ -104,10 +104,11 @@ if uploaded_file and sheet_name:
 
         # ---- ADD WORDCLOUD
         corpus = df_filtered.answer.unique().tolist()
-        st.text(corpus)
-        # for i in ['-', '  ', '’', "\'"]: # drop extra symbols
-        #         corpus = [a.replace(i, '').lower() for a in corpus]
-        # text = ' '.join(corpus)
+        text = ' '.join(corpus)
+        
+        for i in ['-', '  ', '’', "\'"]: # drop extra symbols
+                text = text.replace(i, '')
+        st.text(text)
         # text = text.translate(str.maketrans('', '', string.punctuation))
         
         # # LEMMATIZE
