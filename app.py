@@ -104,49 +104,50 @@ if uploaded_file and sheet_name:
 
         # ---- ADD WORDCLOUD
         corpus = df_filtered.answer.unique().tolist()
-        for i in ['-', '  ', '’', "\'"]: # drop extra symbols
-                corpus = [a.replace(i, '').lower() for a in corpus]
-        text = ' '.join(corpus)
-        text = text.translate(str.maketrans('', '', string.punctuation))
+        st.text(corpus)
+        # for i in ['-', '  ', '’', "\'"]: # drop extra symbols
+        #         corpus = [a.replace(i, '').lower() for a in corpus]
+        # text = ' '.join(corpus)
+        # text = text.translate(str.maketrans('', '', string.punctuation))
         
-        # LEMMATIZE
-        try:
-              text = lemmatize_sentence(text)
-        except:
-              nltk.download()
-              text = lemmatize_sentence(text)
+        # # LEMMATIZE
+        # try:
+        #       text = lemmatize_sentence(text)
+        # except:
+        #       nltk.download()
+        #       text = lemmatize_sentence(text)
 
-        # Create and generate a word cloud image:
-        stop_words = STOPWORDS
+        # # Create and generate a word cloud image:
+        # stop_words = STOPWORDS
 
-        wordcloud = WordCloud(background_color='white',
-                        width=1600, height=1000, 
-                        max_words=len(text),
-                        max_font_size=210, 
-                        relative_scaling=.01,
-                        collocations=False,
-                        stopwords = stop_words).generate(text)
+        # wordcloud = WordCloud(background_color='white',
+        #                 width=1600, height=1000, 
+        #                 max_words=len(text),
+        #                 max_font_size=210, 
+        #                 relative_scaling=.01,
+        #                 collocations=False,
+        #                 stopwords = stop_words).generate(text)
 
-        # Display the generated image:
-        # https://matplotlib.org/stable/tutorials/intermediate/imshow_extent.html
-        st.set_option('deprecation.showPyplotGlobalUse', False)
-        plt.imshow(wordcloud, interpolation='bilinear')
-        plt.axis("off")
-        plt.show()
-        # Save to file first or an image file has already existed.
-        wc = 'wordcloud.png'
-        plt.savefig(wc, pad_inches=None , dpi=1200)
-        col2.pyplot()
+        # # Display the generated image:
+        # # https://matplotlib.org/stable/tutorials/intermediate/imshow_extent.html
+        # st.set_option('deprecation.showPyplotGlobalUse', False)
+        # plt.imshow(wordcloud, interpolation='bilinear')
+        # plt.axis("off")
+        # plt.show()
+        # # Save to file first or an image file has already existed.
+        # wc = 'wordcloud.png'
+        # plt.savefig(wc, pad_inches=None , dpi=1200)
+        # col2.pyplot()
 
         
-        with open(wc, "rb") as img:
-                btn = col2.download_button(
-                        label="Download image",
-                        data=img,
-                        file_name=wc,
-                        mime="image/png",
+        # with open(wc, "rb") as img:
+        #         btn = col2.download_button(
+        #                 label="Download image",
+        #                 data=img,
+        #                 file_name=wc,
+        #                 mime="image/png",
                         
-                )
+        #         )
 
 # #  --- GROUP DATAFRAME
 # df_grouped = df[mask].groupby('experiment_name').uid.nunique().reset_index()
