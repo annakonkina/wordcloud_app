@@ -104,7 +104,7 @@ if uploaded_file and sheet_name:
 
         # ---- ADD WORDCLOUD
         st.text(df_filtered.answer.isna().sum())
-        df_filtered = df_filtered.answer.fillna('-')
+        df_filtered['answer'] = df_filtered['answer'].fillna('-')
         corpus = df_filtered.answer.unique().tolist()
         text = ' '.join(corpus)
         
