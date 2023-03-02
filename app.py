@@ -118,7 +118,7 @@ if uploaded_file and sheet_name:
         try:
               text = lemmatize_sentence(text)
         except:
-              nltk.download()
+              nltk.download('all')
               text = lemmatize_sentence(text)
 
         # Create and generate a word cloud image:
