@@ -106,8 +106,8 @@ if uploaded_file and sheet_name:
         corpus = df_filtered.answer.unique().tolist()
         text = ' '.join(corpus)
         
-        for i in ['-', '  ', '’', "\'"]: # drop extra symbols
-                text = text.replace(i, '')
+        # for i in ['-', '  ', '’', "\'"]: # drop extra symbols
+        #         text = text.replace(i, '')
         st.text(text)
         # text = text.translate(str.maketrans('', '', string.punctuation))
         
