@@ -1,6 +1,6 @@
 matplotlib==3.6.2
 nltk==3.7
-pandas==2.5.7
+pandas==2.0
 Pillow==9.4.0
 plotly==4.14.3
 streamlit==1.16.0
