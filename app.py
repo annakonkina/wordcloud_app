@@ -103,11 +103,13 @@ if uploaded_file and sheet_name:
         # col2.markdown(f'**Check df len:** {df.shape[0]}')
 
         # ---- ADD WORDCLOUD
+        st.text(df_filtered.answer.isna().sum())
+        df_filtered = df_filtered.answer.fillna('-')
         corpus = df_filtered.answer.unique().tolist()
         text = ' '.join(corpus)
         
-        # for i in ['-', '  ', '’', "\'"]: # drop extra symbols
-        #         text = text.replace(i, '')
+        for i in ['-', '  ', '’', "\'"]: # drop extra symbols
+                text = text.replace(i, '')
         st.text(text)
         # text = text.translate(str.maketrans('', '', string.punctuation))
         
