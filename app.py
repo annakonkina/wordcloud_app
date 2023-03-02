@@ -105,8 +105,7 @@ if uploaded_file and sheet_name:
         # ---- ADD WORDCLOUD
         corpus = df_filtered.answer.unique().tolist()
         for i in ['-', '  ', '’', "\'"]: # drop extra symbols
-                corpus = [a.replace(i, '').lower() 
-                          for a in corpus]
+                corpus = [a.replace(i, '').lower() for a in corpus]
         text = ' '.join(corpus)
         text = text.translate(str.maketrans('', '', string.punctuation))
         
