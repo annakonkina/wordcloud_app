@@ -11,7 +11,8 @@ from nltk.tokenize import word_tokenize
 import nltk
 from nltk.corpus import wordnet
 import string
-from st_aggrid import AgGrid, GridUpdateMode, DataReturnMode, GridOptionsBuilder
+from st_aggrid import AgGrid, GridUpdateMode, DataReturnMode, JsCode
+from st_aggrid.grid_options_builder import GridOptionsBuilder
 
 
 def nltk_pos_tagger(nltk_tag):
@@ -65,29 +66,24 @@ if uploaded_file and sheet_name:
                    sheet_name=sheet_name,
                 #    usecols='A:F',
                    header=0)
-        
-        gb = GridOptionsBuilder.from_dataframe(df)
-        gb.configure_pagination(paginationAutoPageSize=True) #Add pagination
-        gb.configure_side_bar() #Add a sidebar
-        gb.configure_selection('multiple', use_checkbox=True, groupSelectsChildren="Group checkbox select children") #Enable multi-row selection
-        gridOptions = gb.build()
-
-        grid_response = AgGrid(
-            df,
-            gridOptions=gridOptions,
-            data_return_mode='AS_INPUT', 
-            update_mode='MODEL_CHANGED', 
-            fit_columns_on_grid_load=False,
-            theme='blue', #Add theme color to the table
-            enable_enterprise_modules=True,
-            height=350, 
-            width='100%',
-            reload_data=True
-        )
-
-        data = grid_response['data']
-        selected = grid_response['selected_rows'] 
-        df_interactive = pd.DataFrame(selected) #Pass the selected rows to a new dataframe df
+        # aggrid
+        gd = GridOptionsBuilder.from_dataframe(df)
+        gd.configure_pagination(enabled=True)
+        gd.configure_default_column(groupable=True)
+        gd.configure_selection(selection_mode='single',
+                               use_ckeckbox=True)
+        gridOptions = gd.build()
+        grid_table = AgGrid(df,
+                            gridOptions = gridOptions,
+                fit_columns_on_grid_load=True,
+                height=500,
+                width='100%',
+                theme='streamlit',
+                update_mode = GridUpdateMode.GRID_CHANGED,
+                reload_data=True,
+                allow_unsafe_jscode=True,
+                editable=True)
+        df_interactive = grid_table['data']
 
 
         # ---DISPLAY AS 2 COLUMNS (picture and the table)
@@ -101,7 +97,7 @@ if uploaded_file and sheet_name:
                 width = 400
                 )
 
-        col2.dataframe(df)
+        col2.dataframe(df_interactive)
 
         # SELECTION BOX AND WORDCLOUD
         col1, col2 = st.columns(2)
