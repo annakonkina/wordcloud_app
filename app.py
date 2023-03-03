@@ -71,7 +71,8 @@ if uploaded_file and sheet_name:
         gd.configure_pagination(enabled=True)
         gd.configure_default_column(groupable=True)
         gd.configure_selection(selection_mode='single',
-                               use_ckeckbox=True)
+                            #    use_ckeckbox=True
+                               )
         gridOptions = gd.build()
         grid_table = AgGrid(df,
                             gridOptions = gridOptions,
