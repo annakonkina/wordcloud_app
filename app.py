@@ -5,6 +5,7 @@ from PIL import Image
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from wordcloud import STOPWORDS
+from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import RegexpTokenizer
 from nltk.tokenize import word_tokenize
@@ -40,7 +41,8 @@ def lemmatize_sentence(sentence):
 
 lemmatizer = WordNetLemmatizer() #lemmatizer.lemmatize("rocks")
 tokenizer = RegexpTokenizer(r'\b\w{3,}\b')
-
+stop_words = set(stopwords.words('english'))
+# stop_words = STOPWORDS
 
 # https://docs.streamlit.io/library/api-reference 
 
@@ -122,7 +124,6 @@ if uploaded_file and sheet_name:
               text = lemmatize_sentence(text)
 
         # Create and generate a word cloud image:
-        stop_words = STOPWORDS
 
         wordcloud = WordCloud(background_color='white',
                         width=1600, height=1000, 
