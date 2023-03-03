@@ -122,7 +122,7 @@ if uploaded_file and sheet_name:
         stop_words = set(stopwords.words('english'))
         language = col2.text_input('Stopwords of which language do you want to use? \
                                  (type f.e. "english", "french" etc)')
-        if language != 'english':
+        if language != 'english' and language != '':
               stop_words = set(stopwords.words(language))
 
         stopwords_to_add = col2.text_input('What stopwords do you want to add? (type words separated by commas)')
