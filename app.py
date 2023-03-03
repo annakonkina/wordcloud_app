@@ -111,8 +111,10 @@ if uploaded_file and sheet_name:
         stopwords_to_remove = col2.text_input('What stopwords you would like to remove? (type words separated by commas)')
         stopwords_to_add_set = set([i.strip().lower() for i in stopwords_to_add.split(',')])
         stopwords_to_remove_set = set([i.strip().lower() for i in stopwords_to_remove.split(',')])
-        stop_words.update(stopwords_to_add_set)
-        stop_words = stop_words - stopwords_to_remove_set
+        if len(stopwords_to_add_set) > 0 and stopwords_to_add_set != set(['']):
+            stop_words.update(stopwords_to_add_set)
+        if len(stopwords_to_remove_set) > 0 and stopwords_to_remove_set != set(['']):
+            stop_words = stop_words - stopwords_to_remove_set
         
         # ---- ADD WORDCLOUD
         col2.text(f'Number of empty answers in the data: {df_filtered.answer.isna().sum()}') 
