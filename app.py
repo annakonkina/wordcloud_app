@@ -61,19 +61,19 @@ sheet_name = st.text_input('Type which sheet you want to open')
 
 if uploaded_file and sheet_name:
 
-        data = pd.read_excel(uploaded_file,
+        df = pd.read_excel(uploaded_file,
                    sheet_name=sheet_name,
                 #    usecols='A:F',
                    header=0)
         
-        gb = GridOptionsBuilder.from_dataframe(data)
+        gb = GridOptionsBuilder.from_dataframe(df)
         gb.configure_pagination(paginationAutoPageSize=True) #Add pagination
         gb.configure_side_bar() #Add a sidebar
         gb.configure_selection('multiple', use_checkbox=True, groupSelectsChildren="Group checkbox select children") #Enable multi-row selection
         gridOptions = gb.build()
 
         grid_response = AgGrid(
-            data,
+            df,
             gridOptions=gridOptions,
             data_return_mode='AS_INPUT', 
             update_mode='MODEL_CHANGED', 
@@ -87,7 +87,7 @@ if uploaded_file and sheet_name:
 
         data = grid_response['data']
         selected = grid_response['selected_rows'] 
-        df = pd.DataFrame(selected) #Pass the selected rows to a new dataframe df
+        df_interactive = pd.DataFrame(selected) #Pass the selected rows to a new dataframe df
 
 
         # ---DISPLAY AS 2 COLUMNS (picture and the table)
