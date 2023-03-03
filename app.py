@@ -101,14 +101,16 @@ if uploaded_file and sheet_name:
         col2.markdown(f'**Available results:** {number_of_result}')
 
         # STOPWORDS
+        stop_words = set(stopwords.words('english'))
         language = col2.text_input('Stopwords of which language do you want to use? \
                                  (type f.e. "english", "french" etc)')
+        if language != 'english':
+              stop_words = set(stopwords.words(language))
+
         stopwords_to_add = col2.text_input('What stopwords do you want to add? (type words separated by commas)')
         stopwords_to_remove = col2.text_input('What stopwords you would like to remove? (type words separated by commas)')
         stopwords_to_add_set = set([i.strip().lower() for i in stopwords_to_add.split(',')])
         stopwords_to_remove_set = set([i.strip().lower() for i in stopwords_to_remove.split(',')])
-
-        stop_words = set(stopwords.words(language))
         stop_words.update(stopwords_to_add_set)
         stop_words = stop_words - stopwords_to_remove_set
         
