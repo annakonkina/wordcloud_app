@@ -87,18 +87,19 @@ if uploaded_file and sheet_name:
         df_interactive = grid_table['data']
 
 
-        # ---DISPLAY AS 2 COLUMNS (picture and the table)
-        col1, col2 = st.columns(2)
+        # image = Image.open('images/hands-keyboard.jpg')
+        # st.image(image,
+        #         #  caption='got from Freepick',
+        #         #  use_column_width=True,
+        #         width = 200
+        #         )
+        # col2.dataframe(df)
 
-        image = Image.open('images/hands-keyboard.jpg')
-
-        col1.image(image,
-                #  caption='got from Freepick',
-                #  use_column_width=True,
-                width = 400
-                )
-
-        col2.dataframe(df_interactive)
+        st.markdown(f"""<style>
+                    p {
+                    background-image: url("images/hands-keyboard.jpg");
+                    }
+                    </style>""" , unsafe_allow_html=True)
 
         # SELECTION BOX AND WORDCLOUD
         col1, col2 = st.columns(2)
