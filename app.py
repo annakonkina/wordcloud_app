@@ -4,7 +4,6 @@ import plotly.express as px
 from PIL import Image
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from wordcloud import STOPWORDS
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import RegexpTokenizer
@@ -41,8 +40,6 @@ def lemmatize_sentence(sentence):
 
 lemmatizer = WordNetLemmatizer() #lemmatizer.lemmatize("rocks")
 tokenizer = RegexpTokenizer(r'\b\w{3,}\b')
-stop_words = set(stopwords.words('english'))
-# stop_words = STOPWORDS
 
 # https://docs.streamlit.io/library/api-reference 
 
@@ -76,7 +73,7 @@ if uploaded_file and sheet_name:
         col1.image(image,
                 #  caption='got from Freepick',
                 #  use_column_width=True,
-                width = 200
+                width = 400
                 )
 
         col2.dataframe(df)
@@ -102,8 +99,19 @@ if uploaded_file and sheet_name:
         
         number_of_result = df_filtered.shape[0]
         col2.markdown(f'**Available results:** {number_of_result}')
-        # col2.markdown(f'**Check df len:** {df.shape[0]}')
 
+        # STOPWORDS
+        language = col2.text_input('Stopwords of which language do you want to use? \
+                                 (type f.e. "english", "french" etc)')
+        stopwords_to_add = col2.text_input('What stopwords do you want to add? (type words separated by commas)')
+        stopwords_to_remove = col2.text_input('What stopwords you would like to remove? (type words separated by commas)')
+        stopwords_to_add_set = set([i.strip().lower() for i in stopwords_to_add.split(',')])
+        stopwords_to_remove_set = set([i.strip().lower() for i in stopwords_to_remove.split(',')])
+
+        stop_words = set(stopwords.words(language))
+        stop_words.update(stopwords_to_add_set)
+        stop_words = stop_words - stopwords_to_remove_set
+        
         # ---- ADD WORDCLOUD
         col2.text(f'Number of empty answers in the data: {df_filtered.answer.isna().sum()}') 
         df_filtered['answer'] = df_filtered['answer'].fillna('-')
