@@ -11,6 +11,8 @@ from nltk.tokenize import word_tokenize
 import nltk
 from nltk.corpus import wordnet
 import string
+from st_aggrid import AgGrid #GridUpdateMode, DataReturnMode GridOptionsBuilder, 
+
 
 def nltk_pos_tagger(nltk_tag):
     if nltk_tag.startswith('J'):
@@ -63,6 +65,7 @@ if uploaded_file and sheet_name:
                    sheet_name=sheet_name,
                 #    usecols='A:F',
                    header=0)
+        AgGrid(df)
 
 
         # ---DISPLAY AS 2 COLUMNS (picture and the table)
@@ -77,6 +80,7 @@ if uploaded_file and sheet_name:
                 )
 
         col2.dataframe(df)
+
         # SELECTION BOX AND WORDCLOUD
         col1, col2 = st.columns(2)
 
