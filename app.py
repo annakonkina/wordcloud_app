@@ -120,7 +120,7 @@ if 'df' not in st.session_state:
     
     # --- FILTER DATAFRAME BASED ON SELECTION
     for i in range(nb_cols):
-            mask.append((df[df_cols[i]].isin(globals()[f'{i}_selection'])))
+            mask.append((st.session_state.df[df_cols[i]].isin(globals()[f'{i}_selection'])))
 
     df_filtered = st.session_state.df.copy()
     for cond in mask:
