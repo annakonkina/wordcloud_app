@@ -137,7 +137,10 @@ for cond in mask:
         df_filtd = df_[cond]
         st.session_state.df_filtered = df_filtd
 
-st.session_state.df_filtered['answer'] = st.session_state.df_filtered['answer'].fillna('-')
+df_ = st.session_state.df_filtered
+df_['answer'] = df_['answer'].fillna('-')
+st.session_state.df_filtered = df_
+
 number_of_result = st.session_state.df_filtered.shape[0]
 col2.markdown(f'**Available results:** {number_of_result}')
 
@@ -156,8 +159,7 @@ if len(stopwords_to_remove_set) > 0 and stopwords_to_remove_set != set(['']):
     stop_words = stop_words - stopwords_to_remove_set
 
 # ---- ADD WORDCLOUD
-col2.text(f'Number of empty answers in the data: {\
-          st.session_state.df_filtered.answer.isna().sum()}') 
+col2.text(f'Number of empty answers in the data: {st.session_state.df_filtered.answer.isna().sum()}') 
 corpus = st.session_state.df_filtered.answer.unique().tolist()
 corpus = [i.lower() for i in corpus]
 text = ' '.join(corpus)
