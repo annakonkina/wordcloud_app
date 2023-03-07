@@ -134,10 +134,10 @@ if 'df_filtered' not in st.session_state:
     st.session_state.df_filtered = df.copy()
 for cond in mask:
         df_ = st.session_state.df_filtered
-        df_filtd = df_[cond].fillna('-')
+        df_filtd = df_[cond]
         st.session_state.df_filtered = df_filtd
 
-
+st.session_state.df_filtered['answer'] = st.session_state.df_filtered['answer'].fillna('-')
 number_of_result = st.session_state.df_filtered.shape[0]
 col2.markdown(f'**Available results:** {number_of_result}')
 
