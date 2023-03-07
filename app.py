@@ -156,9 +156,9 @@ if len(stopwords_to_remove_set) > 0 and stopwords_to_remove_set != set(['']):
     stop_words = stop_words - stopwords_to_remove_set
 
 # ---- ADD WORDCLOUD
-col2.text(f'Number of empty answers in the data: {st.session_state.answer.isna().sum()}') 
-df_filtered['answer'] = st.session_state['answer'].fillna('-')
-corpus = st.session_state.answer.unique().tolist()
+col2.text(f'Number of empty answers in the data: {st.session_state.df_filtered.answer.isna().sum()}') 
+df_filtered['answer'] = st.session_state.df_filtered['answer'].fillna('-')
+corpus = st.session_state.df_filtered.answer.unique().tolist()
 corpus = [i.lower() for i in corpus]
 text = ' '.join(corpus)
 
