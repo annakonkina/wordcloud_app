@@ -49,12 +49,10 @@ tokenizer = RegexpTokenizer(r'\b\w{3,}\b')
 # Don't set ttl or max_entries in this case
 @st.cache
 def load_stopwords():
-    return nltk.download('stopwords') #IMPORTANT TO DOWNLOAD FIRST TIME
-def load_punkt():
-    return nltk.download('punkt') #IMPORTANT TO DOWNLOAD FIRST TIME
-
-stopwords = load_stopwords()
-punkt = load_punkt()
+    #IMPORTANT TO DOWNLOAD FIRST TIME
+    return nltk.download('stopwords'), nltk.download('punkt') 
+    
+stopwords, punkt = load_stopwords()
 
 st.set_page_config(page_title = 'Verbatims analysis', layout="wide")
 st.header('Verbatims analysis')
