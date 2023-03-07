@@ -113,10 +113,10 @@ if uploaded_file and sheet_name:
     language = col2.text_input('Stopwords of which language do you want to use? \
                                 (type f.e. "english", "french" etc)', key = 'language')
     stopwords_to_add = col2.text_input('What stopwords do you want to add? \
-                                    (type words separated by commas or press enter)', 
+                                    (type words separated by commas)', 
                                     key = 'stopwords_add')
     stopwords_to_remove = col2.text_input('What stopwords you would like to remove? \
-                                        (type words separated by commas or press enter)', 
+                                        (type words separated by commas)', 
                                         key = 'stopwords_remove')
 
     # --- FILTER DATAFRAME BASED ON SELECTION
