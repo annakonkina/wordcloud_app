@@ -62,12 +62,18 @@ st.markdown('The excel table should have columns: uid, answer, question, experim
 uploaded_file = st.file_uploader('Drag a verbatims file here', type=['xlsx'])
 sheet_name = st.text_input('Type which sheet you want to open')
 
-if uploaded_file and sheet_name:
+# Initialization
+if 'uploaded_file' not in st.session_state:
+    st.session_state['uploaded_file'] = uploaded_file
+if 'sheet_name' not in st.session_state:
+    st.session_state['sheet_name'] = sheet_name    
 
-        df = pd.read_excel(uploaded_file,
-                   sheet_name=sheet_name,
+df = pd.read_excel(st.session_state['uploaded_file'],
+                   sheet_name=st.session_state['sheet_name'],
                 #    usecols='A:F',
                    header=0)
+
+if uploaded_file and sheet_name:
         # aggrid
         gd = GridOptionsBuilder.from_dataframe(df)
         gd.configure_pagination(enabled=True)
