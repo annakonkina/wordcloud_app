@@ -46,8 +46,8 @@ tokenizer = RegexpTokenizer(r'\b\w{3,}\b')
 
 # https://docs.streamlit.io/library/api-reference 
 
-# nltk.download('stopwords') #IMPORTANT TO DOWNLOAD FIRST TIME
-# nltk.download('punkt') #IMPORTANT TO DOWNLOAD FIRST TIME
+nltk.download('stopwords') #IMPORTANT TO DOWNLOAD FIRST TIME
+nltk.download('punkt') #IMPORTANT TO DOWNLOAD FIRST TIME
 
 st.set_page_config(page_title = 'Verbatims analysis', layout="wide")
 st.header('Verbatims analysis')
