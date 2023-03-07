@@ -66,7 +66,8 @@ sheet_name = st.text_input('Type which sheet you want to open', key = 'sheet_nam
 if 'sheet_name' not in st.session_state:
     st.session_state['sheet_name'] = 0
 if 'uploaded_file' not in st.session_state:
-    st.session_state['uploaded_file'] = 'verbatims.xlsx'   
+    st.session_state['uploaded_file'] = './verbatims.xlsx'
+
 
 df = pd.read_excel(st.session_state.uploaded_file,
                    sheet_name=sheet_name,
