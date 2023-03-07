@@ -138,7 +138,7 @@ for cond in mask:
         st.session_state.df_filtered = df_filtd
 
 
-number_of_result = st.session_state.shape[0]
+number_of_result = st.session_state.df_filtered.shape[0]
 col2.markdown(f'**Available results:** {number_of_result}')
 
 # STOPWORDS
