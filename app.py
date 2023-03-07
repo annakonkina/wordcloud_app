@@ -59,17 +59,15 @@ st.subheader('Wordcloud:')
 
 ### --- LOAD DATA
 st.markdown('The excel table should have columns: uid, answer, question, experiment_name plus filter/breakout columns')
-uploaded_file = st.file_uploader('Drag a verbatims file here', type=['xlsx'])
-sheet_name = st.text_input('Type which sheet you want to open')
+uploaded_file = st.file_uploader('Drag a verbatims file here', type=['xlsx'], key="uploaded_file")
+sheet_name = st.text_input('Type which sheet you want to open', key = 'sheet_name')
 
-# Initialization
-if 'uploaded_file' not in st.session_state:
-    st.session_state['uploaded_file'] = uploaded_file
-if 'sheet_name' not in st.session_state:
-    st.session_state['sheet_name'] = sheet_name    
+# # Initialization
+# if 'uploaded_file' not in st.session_state:
+#     st.session_state['uploaded_file'] = uploaded_file    
 
-df = pd.read_excel(st.session_state['uploaded_file'],
-                   sheet_name=st.session_state['sheet_name'],
+df = pd.read_excel(uploaded_file,
+                   sheet_name=sheet_name,
                 #    usecols='A:F',
                    header=0)
 
