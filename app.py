@@ -128,20 +128,17 @@ stopwords_to_remove = col2.text_input('What stopwords you would like to remove? 
 for i in range(nb_cols):
         mask.append((df[df_cols[i]].isin(globals()[f'{i}_selection'])))
 
-# df_filtered = df.copy()
+df_filtered = df.copy()
 
 if 'df_filtered' not in st.session_state:
-    st.session_state.df_filtered = df.copy()
+    st.session_state.df_filtered = df_filtered
+
 for cond in mask:
-        df_ = st.session_state.df_filtered
-        df_filtd = df_[cond]
-        st.session_state.df_filtered = df_filtd
+        df_filtered = df_filtered[cond]
 
-df_ = st.session_state.df_filtered
-df_['answer'] = df_['answer'].fillna('-')
-st.session_state.df_filtered = df_
+df_filtered['answer'] = df_filtered['answer'].fillna('-')
 
-number_of_result = st.session_state.df_filtered.shape[0]
+number_of_result = df_filtered.shape[0]
 col2.markdown(f'**Available results:** {number_of_result}')
 
 # STOPWORDS
@@ -159,8 +156,8 @@ if len(stopwords_to_remove_set) > 0 and stopwords_to_remove_set != set(['']):
     stop_words = stop_words - stopwords_to_remove_set
 
 # ---- ADD WORDCLOUD
-col2.text(f'Number of empty answers in the data: {st.session_state.df_filtered.answer.isna().sum()}') 
-corpus = st.session_state.df_filtered.answer.unique().tolist()
+col2.text(f'Number of empty answers in the data: {df_filtered.answer.isna().sum()}') 
+corpus = df_filtered.answer.unique().tolist()
 corpus = [i.lower() for i in corpus]
 text = ' '.join(corpus)
 
