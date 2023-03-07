@@ -116,9 +116,13 @@ for i in range(nb_cols):
                                 default = globals()[f'{i}_options'])
 
 language = col2.text_input('Stopwords of which language do you want to use? \
-                            (type f.e. "english", "french" etc)')
-stopwords_to_add = col2.text_input('What stopwords do you want to add? (type words separated by commas)')
-stopwords_to_remove = col2.text_input('What stopwords you would like to remove? (type words separated by commas)')
+                            (type f.e. "english", "french" etc)', key = 'language')
+stopwords_to_add = col2.text_input('What stopwords do you want to add? \
+                                   (type words separated by commas or press enter)', 
+                                   key = 'stopwords_add')
+stopwords_to_remove = col2.text_input('What stopwords you would like to remove? \
+                                      (type words separated by commas or press enter)', 
+                                      key = 'stopwords_remove')
 
 # --- FILTER DATAFRAME BASED ON SELECTION
 for i in range(nb_cols):
