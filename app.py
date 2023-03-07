@@ -113,7 +113,7 @@ if 'df' not in st.session_state:
     df_cols = [i for i in st.session_state.df.columns if i not in ['uid', 'answer']]
     mask = []
     for i in range(nb_cols):
-            globals()[f'{i}_options'] = df[df_cols[i]].unique().tolist()
+            globals()[f'{i}_options'] = st.session_state.df[df_cols[i]].unique().tolist()
             globals()[f'{i}_selection'] = col1.multiselect(f'{df_cols[i]}:',
                                     globals()[f'{i}_options'],
                                     default = globals()[f'{i}_options'])
