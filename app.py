@@ -109,8 +109,8 @@ if 'df' not in st.session_state:
     # SELECTION BOX AND WORDCLOUD
     col1, col2 = st.columns(2)
 
-    nb_cols = len([i for i in df.columns if i not in ['uid', 'answer']])
-    df_cols = [i for i in df.columns if i not in ['uid', 'answer']]
+    nb_cols = len([i for i in st.session_state.df.columns if i not in ['uid', 'answer']])
+    df_cols = [i for i in st.session_state.df.columns if i not in ['uid', 'answer']]
     mask = []
     for i in range(nb_cols):
             globals()[f'{i}_options'] = df[df_cols[i]].unique().tolist()
