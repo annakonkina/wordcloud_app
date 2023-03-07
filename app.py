@@ -134,7 +134,7 @@ if 'df_filtered' not in st.session_state:
     st.session_state.df_filtered = df.copy()
 for cond in mask:
         df_ = st.session_state.df_filtered
-        df_filtd = df_[cond]
+        df_filtd = df_[cond].fillna('-')
         st.session_state.df_filtered = df_filtd
 
 
@@ -156,8 +156,8 @@ if len(stopwords_to_remove_set) > 0 and stopwords_to_remove_set != set(['']):
     stop_words = stop_words - stopwords_to_remove_set
 
 # ---- ADD WORDCLOUD
-col2.text(f'Number of empty answers in the data: {st.session_state.df_filtered.answer.isna().sum()}') 
-df_filtered['answer'] = st.session_state.df_filtered['answer'].fillna('-')
+col2.text(f'Number of empty answers in the data: {\
+          st.session_state.df_filtered.answer.isna().sum()}') 
 corpus = st.session_state.df_filtered.answer.unique().tolist()
 corpus = [i.lower() for i in corpus]
 text = ' '.join(corpus)
