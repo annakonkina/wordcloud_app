@@ -47,12 +47,12 @@ tokenizer = RegexpTokenizer(r'\b\w{3,}\b')
 # https://docs.streamlit.io/library/api-reference 
 # Load the model (only executed once!)
 # Don't set ttl or max_entries in this case
-@st.cache
+
 def load_stopwords():
     #IMPORTANT TO DOWNLOAD FIRST TIME
     return nltk.download('stopwords'), nltk.download('punkt') 
     
-stopwords, punkt = load_stopwords()
+st.cache(load_stopwords)
 
 st.set_page_config(page_title = 'Verbatims analysis', layout="wide")
 st.header('Verbatims analysis')
