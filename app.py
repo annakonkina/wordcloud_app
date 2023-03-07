@@ -45,9 +45,16 @@ lemmatizer = WordNetLemmatizer() #lemmatizer.lemmatize("rocks")
 tokenizer = RegexpTokenizer(r'\b\w{3,}\b')
 
 # https://docs.streamlit.io/library/api-reference 
+# Load the model (only executed once!)
+# Don't set ttl or max_entries in this case
+@st.cache
+def load_stopwords():
+    return nltk.download('stopwords') #IMPORTANT TO DOWNLOAD FIRST TIME
+def load_punkt():
+    return nltk.download('punkt') #IMPORTANT TO DOWNLOAD FIRST TIME
 
-# nltk.download('stopwords') #IMPORTANT TO DOWNLOAD FIRST TIME
-# nltk.download('punkt') #IMPORTANT TO DOWNLOAD FIRST TIME
+stopwords = load_stopwords()
+punkt = load_punkt()
 
 st.set_page_config(page_title = 'Verbatims analysis', layout="wide")
 st.header('Verbatims analysis')
