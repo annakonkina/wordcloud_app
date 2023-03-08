@@ -171,6 +171,8 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     number_of_result = df_filtered.shape[0]
     col2.markdown(f'**Available results:** {number_of_result}')
+    col2.markdown('If you want to add or remove extra stopwords and set language, please, fill the fields below (pressing Enter) \
+                  and then press $Submit extra stopwords and language$ button above')
 
     # STOPWORDS
     language = col2.text_input('Stopwords of which language do you want to use? \
