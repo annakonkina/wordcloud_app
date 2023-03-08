@@ -105,21 +105,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         #  inputs are not filled
         st.text('You can upload another excel file')
 
-    # ADDING IMAGE AND DISPLAYING THE DF
-    col1, col2 = st.columns(2)
-    image = Image.open('images/hands-keyboard.jpg')
-    col1.image(image,
-            #  caption='got from Freepick',
-            #  use_column_width=True,
-            width = 400
-            )
-    try:
-        col2.markdown(f'**Extra stopwords added**: {st.session_state.stopwords_to_add}')
-        col2.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
-        col2.markdown(f'**Language added**: {st.session_state.language}')
-    except:
-        col2.markdown(f'No extra stopwords or language have been input >> standard stopwords and English language')
-
     # aggrid
     gd = GridOptionsBuilder.from_dataframe(df)
     gd.configure_pagination(enabled=True)
@@ -139,6 +124,23 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             allow_unsafe_jscode=True,
             editable=True)
     df_interactive = grid_table['data']
+
+    # ADDING IMAGE AND DISPLAYING THE DF
+    col1, col2 = st.columns(2)
+    image = Image.open('images/hands-keyboard.jpg')
+    col1.image(image,
+            #  caption='got from Freepick',
+            #  use_column_width=True,
+            width = 400
+            )
+    try:
+        col2.markdown(f'**Extra stopwords added**: {st.session_state.stopwords_to_add}')
+        col2.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
+        col2.markdown(f'**Language added**: {st.session_state.language}')
+    except:
+        col2.markdown(f'No extra stopwords or language have been input >> standard stopwords and English language')
+
+    
 
     # SELECTION BOX AND WORDCLOUD
     col1, col2 = st.columns(2)
