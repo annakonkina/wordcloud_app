@@ -209,7 +209,8 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     # ---- ADD WORDCLOUD
     df_filtered['answer'] = df_filtered['answer'].fillna('-')
-    col2.text(f'Number of empty answers in the data: {len(df_filtered[df_filtered.answer=='-'])}') 
+    nb_ = len(df_filtered[df_filtered.answer=='-'])
+    col2.text(f'Number of empty answers in the data: {nb_}') 
     corpus = df_filtered.answer.unique().tolist()
     corpus = [i.lower() for i in corpus]
     text = ' '.join(corpus)
