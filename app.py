@@ -125,22 +125,44 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             editable=True)
     df_interactive = grid_table['data']
 
-    # ADDING IMAGE AND DISPLAYING THE DF
-    col1, col2 = st.columns(2)
-    image = Image.open('images/hands-keyboard.jpg')
-    col1.image(image,
-            #  caption='got from Freepick',
-            #  use_column_width=True,
-            width = 400
-            )
-    if 'submit_extra_input' not in st.session_state:
-        st.session_state.submit_extra_input = False
-    if st.session_state.submit_extra_input:
-        col2.markdown(f'**Extra stopwords added**: {st.session_state.stopwords_to_add}')
-        col2.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
-        col2.markdown(f'**Language added**: {st.session_state.language}')
+    # # ADDING IMAGE AND DISPLAYING THE DF
+    # col1, col2 = st.columns(2)
+    # image = Image.open('images/hands-keyboard.jpg')
+    # col1.image(image,
+    #         #  caption='got from Freepick',
+    #         #  use_column_width=True,
+    #         width = 400
+    #         )
+    # EXTRA input form
+    extra_form = st.form(key="user_form")
+    stopwords_to_add = extra_form.text_input('What stopwords do you want to add? (type words separated by commas)')
+    stopwords_to_remove = extra_form.text_input('What stopwords you would like to remove? (type words separated by commas)')
+    language = extra_form.text_input('Stopwords of which language do you want to use? \
+                                (type f.e. "english", "french" etc):')
+    # default
+    if 'language' not in st.session_state:
+        st.session_state.language = 'english'
+    if 'stopwords_to_add' not in st.session_state:
+        st.session_state.stopwords_to_add = {}
+    if 'stopwords_to_remove' not in st.session_state:
+        st.session_state.stopwords_to_remove = {}
+
+    if extra_form.form_submit_button('Submit extra input'):
+        stopwords_to_add_set = set([i.strip().lower() for i in stopwords_to_add.split(',')])
+        stopwords_to_remove_set = set([i.strip().lower() for i in stopwords_to_remove.split(',')])
+        if len(language) != 0:
+            st.session_state.language = language
+        if len(stopwords_to_add_set) > 0:
+            st.session_state.stopwords_to_add = stopwords_to_add_set 
+        if len(stopwords_to_remove_set) > 0:
+            st.session_state.stopwords_to_remove = stopwords_to_remove_set 
+        
+        st.markdown(f'**Extra stopwords added**: {st.session_state.stopwords_to_add}')
+        st.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
+        st.markdown(f'**Language added**: {st.session_state.language}')
+        st.markdown("*Standard language is English, if no language added") 
     else:
-        col2.markdown(f'No extra stopwords or language have been input >> standard stopwords and English language')
+         st.markdown('Default parameters is being used')
 
     
 
@@ -155,7 +177,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             globals()[f'{i}_selection'] = col1.multiselect(f'{df_cols[i]}:',
                                     globals()[f'{i}_options'],
                                     default = globals()[f'{i}_options'])
-
     # --- FILTER DATAFRAME BASED ON SELECTION
     for i in range(nb_cols):
             mask.append((df[df_cols[i]].isin(globals()[f'{i}_selection'])))
@@ -174,48 +195,13 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     col2.markdown('If you want to add or remove extra stopwords and set language, please, fill the fields below (pressing Enter) \
                   and then press [Submit extra stopwords and language] button above')
 
-    # STOPWORDS
-    language = col2.text_input('Stopwords of which language do you want to use? \
-                                (type f.e. "english", "french" etc)')
-    if language and st.session_state.submit_extra_input:
-        st.session_state.language = language
-    else:
-        if 'language' not in st.session_state or not st.session_state.submit_extra_input:
-            st.session_state.language = 'english'
-
+    #STOPWORDS
     stop_words = set(stopwords.words(st.session_state.language))
-    if 'stopwords_to_add' not in st.session_state:
-        st.session_state.stopwords_to_add = {}
-    if 'stopwords_to_remove' not in st.session_state:
-        st.session_state.stopwords_to_remove = {}
-
-    stopwords_to_add = col2.text_input('What stopwords do you want to add? (type words separated by commas)')
-    stopwords_to_remove = col2.text_input('What stopwords you would like to remove? (type words separated by commas)')
-
-    stopwords_to_add_set = set([i.strip().lower() for i in stopwords_to_add.split(',')])
-    stopwords_to_remove_set = set([i.strip().lower() for i in stopwords_to_remove.split(',')])
-
-    # updating session state
-    st.session_state.submit_extra_input = False
-    submit_extra_input = col2.button('Submit extra stopwords and language')
-    if submit_extra_input:
-        st.session_state.submit_extra_input = True
-
-    if stopwords_to_add:
-        st.session_state.stopwords_to_add = stopwords_to_add_set
-    if stopwords_to_remove:
-        st.session_state.stopwords_to_add = stopwords_to_remove_set
-
-
-    if len(st.session_state.stopwords_to_add) > 0 and st.session_state.submit_extra_input:
+    if len(st.session_state.stopwords_to_add) > 0:
         stop_words.update(st.session_state.stopwords_to_add)
-
-    if len(st.session_state.stopwords_to_remove) > 0 and st.session_state.submit_extra_input:
+    if len(st.session_state.stopwords_to_remove) > 0:
         stop_words = stop_words - st.session_state.stopwords_to_remove
 
-    # reset
-    st.session_state.submit_extra_input = False
-    
     # ---- ADD WORDCLOUD
     col2.text(f'Number of empty answers in the data: {df_filtered.answer.isna().sum()}') 
     df_filtered['answer'] = df_filtered['answer'].fillna('-')
