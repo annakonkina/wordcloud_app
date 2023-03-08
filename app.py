@@ -245,7 +245,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         col2.pyplot()
         # download button
         with open(wc_png, "rb") as img:
-                btn = col2.download_button(
+            btn = col2.download_button(
                         label="Download image",
                         data=img,
                         file_name=wc_png,
@@ -253,18 +253,29 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
          
     # Create and generate a word cloud image:
     if 'wordcloud' not in st.session_state:
-        wordcloud = WordCloud(background_color='white',
-                        width=1600, height=1000, 
-                        max_words=len(text),
-                        max_font_size=210, 
-                        relative_scaling=.01,
-                        collocations=False,
-                        stopwords = stop_words).generate(text)
+        with st.spinner('Wait for it...'):
+            wordcloud = WordCloud(background_color='white',
+                            width=1600, height=1000, 
+                            max_words=len(text),
+                            max_font_size=210, 
+                            relative_scaling=.01,
+                            collocations=False,
+                            stopwords = stop_words).generate(text)
         st.session_state.wordcloud = wordcloud
         with st.spinner('Wait for it...'):
             display_wordcloud(st.session_state.wordcloud)
-
-    if 'wordcloud' in st.session_state and regenerate_wordcloud:
+    
+    regenerate_wordcloud = col2.button('Regenerate wordcloud')
+    if regenerate_wordcloud:
+        with st.spinner('Wait for it...'):
+            wordcloud = WordCloud(background_color='white',
+                            width=1600, height=1000, 
+                            max_words=len(text),
+                            max_font_size=210, 
+                            relative_scaling=.01,
+                            collocations=False,
+                            stopwords = stop_words).generate(text)
+        st.session_state.wordcloud = wordcloud
         with st.spinner('Wait for it...'):
             display_wordcloud(st.session_state.wordcloud)
 
