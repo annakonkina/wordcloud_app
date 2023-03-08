@@ -202,9 +202,9 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     #STOPWORDS
     stop_words = set(stopwords.words(st.session_state.language))
-    if len(st.session_state.stopwords_to_add) > 0:
+    if len(st.session_state.stopwords_to_add) > 0 and st.session_state.stopwords_to_add != {''}:
         stop_words.update(st.session_state.stopwords_to_add)
-    if len(st.session_state.stopwords_to_remove) > 0:
+    if len(st.session_state.stopwords_to_remove) > 0 and st.session_state.stopwords_to_remove != {''}:
         stop_words = stop_words - st.session_state.stopwords_to_remove
 
     # ---- ADD WORDCLOUD
