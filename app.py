@@ -133,11 +133,13 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             #  use_column_width=True,
             width = 400
             )
-    try:
+    submit_extra_input = col2.button('Submit extra stopwords and language')
+
+    if submit_extra_input:
         col2.markdown(f'**Extra stopwords added**: {st.session_state.stopwords_to_add}')
         col2.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
         col2.markdown(f'**Language added**: {st.session_state.language}')
-    except:
+    else:
         col2.markdown(f'No extra stopwords or language have been input >> standard stopwords and English language')
 
     
