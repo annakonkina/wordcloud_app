@@ -255,11 +255,11 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
                         collocations=False,
                         stopwords = stop_words).generate(text)
         st.session_state.wordcloud = wordcloud
-        with col2.spinner('Wait for it...'):
+        with st.spinner('Wait for it...'):
             display_wordcloud(st.session_state.wordcloud)
 
     if 'wordcloud' in st.session_state and regenerate_wordcloud:
-        with col2.spinner('Wait for it...'):
+        with st.spinner('Wait for it...'):
             display_wordcloud(st.session_state.wordcloud)
 
 
