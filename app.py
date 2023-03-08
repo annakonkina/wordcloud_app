@@ -208,8 +208,8 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         stop_words = stop_words - st.session_state.stopwords_to_remove
 
     # ---- ADD WORDCLOUD
-    col2.text(f'Number of empty answers in the data: {df_filtered.answer.isna().sum()}') 
     df_filtered['answer'] = df_filtered['answer'].fillna('-')
+    col2.text(f'Number of empty answers in the data: {len(df_filtered[df_filtered.answer=='-'])}') 
     corpus = df_filtered.answer.unique().tolist()
     corpus = [i.lower() for i in corpus]
     text = ' '.join(corpus)
