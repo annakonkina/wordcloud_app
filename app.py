@@ -133,6 +133,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             #  use_column_width=True,
             width = 400
             )
+    col2.markdown('Overlook at the data:')
     col2.dataframe(df)
 
     # EXTRA input form
@@ -194,8 +195,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     number_of_result = df_filtered.shape[0]
     col2.markdown(f'**Available results:** {number_of_result}')
-    col2.markdown('If you want to add or remove extra stopwords and set language, please, fill the fields below (pressing Enter) \
-                  and then press [Submit extra stopwords and language] button above')
 
     #STOPWORDS
     stop_words = set(stopwords.words(st.session_state.language))
@@ -226,7 +225,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             nltk.download('all')
             text = lemmatize_sentence(text)
 
-    regenerate_wordcloud = col2.button('Regenerate wordcloud')
+    regenerate_wordcloud = col2.button('Regenerate wordcloud', key = 'regenerate_button')
 
     def display_wordcloud(wc):
          # Display the generated image:
@@ -245,7 +244,8 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
                         label="Download image",
                         data=img,
                         file_name=wc_png,
-                        mime="image/png")
+                        mime="image/png",
+                        key='download_button')
          
     # Create and generate a word cloud image:
     if 'wordcloud' not in st.session_state:
@@ -261,7 +261,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         with st.spinner('Wait for it...'):
             display_wordcloud(st.session_state.wordcloud)
     
-    regenerate_wordcloud = col2.button('Regenerate wordcloud')
     if regenerate_wordcloud:
         with st.spinner('Wait for it...'):
             wordcloud = WordCloud(background_color='white',
