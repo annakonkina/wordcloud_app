@@ -177,10 +177,10 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     # STOPWORDS
     language = col2.text_input('Stopwords of which language do you want to use? \
                                 (type f.e. "english", "french" etc)')
-    if language and submit_extra_input:
+    if language and st.session_state.submit_extra_input:
         st.session_state.language = language
     else:
-        if 'language' not in st.session_state or not submit_extra_input:
+        if 'language' not in st.session_state or not st.session_state.submit_extra_input:
             st.session_state.language = 'english'
 
     stop_words = set(stopwords.words(st.session_state.language))
