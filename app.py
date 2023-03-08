@@ -175,10 +175,10 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     # STOPWORDS
     language = col2.text_input('Stopwords of which language do you want to use? \
                                 (type f.e. "english", "french" etc)')
-    if language:
+    if language and submit_extra_input:
         st.session_state.language = language
     else:
-        if 'language' not in st.session_state:
+        if 'language' not in st.session_state or not submit_extra_input:
             st.session_state.language = 'english'
 
     stop_words = set(stopwords.words(st.session_state.language))
@@ -189,15 +189,15 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     stopwords_to_add_set = set([i.strip().lower() for i in stopwords_to_add.split(',')])
     stopwords_to_remove_set = set([i.strip().lower() for i in stopwords_to_remove.split(',')])
     # updating session state
-    if stopwords_to_add:
+    if stopwords_to_add and submit_extra_input:
         st.session_state.stopwords_to_add = stopwords_to_add_set
     else:
-        if 'stopwords_to_add' not in st.session_state:
+        if 'stopwords_to_add' not in st.session_state or not submit_extra_input:
             st.session_state.stopwords_to_add = {}
-    if stopwords_to_remove:
+    if stopwords_to_remove and submit_extra_input:
         st.session_state.stopwords_to_remove = stopwords_to_remove_set
     else:
-        if 'stopwords_to_remove' not in st.session_state:
+        if 'stopwords_to_remove' not in st.session_state or not submit_extra_input:
             st.session_state.stopwords_to_remove = {}
 
     if len(st.session_state.stopwords_to_add) > 0 and st.session_state.stopwords_to_add != set(['']):
