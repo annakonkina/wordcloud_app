@@ -166,6 +166,9 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         st.markdown("*Standard language is English, if no language added") 
     else:
          st.markdown('Default parameters (if you have not input anything yet) or parameters previously set are being used')
+         st.markdown(f'**Extra stopwords added**: {st.session_state.stopwords_to_add}')
+         st.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
+         st.markdown(f'**Language added**: {st.session_state.language}')
 
     st.markdown('If you want to generate the wordcloud after changing some parameters, please click on [**Regenerate wordcloud**]')
     
