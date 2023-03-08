@@ -59,15 +59,66 @@ st.subheader('Wordcloud:')
 
 ### --- LOAD DATA
 st.markdown('The excel table should have columns: uid, answer, question, experiment_name plus filter/breakout columns')
-uploaded_file = st.file_uploader('Drag a verbatims file here', type=['xlsx'], key="uploaded_file")
-sheet_name = st.text_input('Type which sheet you want to open', key = 'sheet_name')
+uploaded_file = st.file_uploader('Drag a verbatims file here', type=['xlsx'])
+sheet_name = st.text_input('Type which sheet you want to open')
+submit = st.button('Submit')
 
+if uploaded_file and sheet_name and submit:
+        st.session_state.uploaded_file = uploaded_file
+        st.session_state.sheet_name = sheet_name
+elif uploaded_file and sheet_name and not submit:
+    st.text('You can upload another excel file')
+elif not uploaded_file and not sheet_name and not submit and 'uploaded_file' in st.session_state and 'sheet_name' in  st.session_state:
+    st.text('You can upload another excel file')
+else:
+    #  inputs are not filled
+    st.text('Please upload excel file')
 
-if uploaded_file and sheet_name:
-    df = pd.read_excel(uploaded_file,
-                   sheet_name=sheet_name,
-                #    usecols='A:F',
-                   header=0)
+if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
+    #  only if input is in session we continue
+    if not submit:
+            # case after coming back to page withing the session
+        if 'df_filtered' in st.session_state:
+            df = st.session_state.df_filtered
+        else:
+            if 'df' not in st.session_state:
+                # first input before df is defined
+                df = pd.read_excel(st.session_state.uploaded_file,
+                            sheet_name=st.session_state.sheet_name,
+                        #    usecols='A:F',
+                            header=0)
+                st.session_state.df  = df
+            else:
+                st.text('smth not expected line 79, because df_filtered should be defined anyway')
+
+    elif submit:
+        # means second or more input so we need to redefine our inputs and read df again
+        st.session_state.uploaded_file = uploaded_file
+        st.session_state.sheet_name = sheet_name
+        df = pd.read_excel(st.session_state.uploaded_file,
+                            sheet_name=st.session_state.sheet_name,
+                        #    usecols='A:F',
+                            header=0)
+        st.session_state.df  = df
+
+    else:
+        #  inputs are not filled
+        st.text('You can upload another excel file')
+
+    # ADDING IMAGE AND DISPLAYING THE DF
+    col1, col2 = st.columns(2)
+    image = Image.open('images/hands-keyboard.jpg')
+    col1.image(image,
+            #  caption='got from Freepick',
+            #  use_column_width=True,
+            width = 400
+            )
+    try:
+        col2.markdown(f'**Extra stopwords added**: {st.session_state.stopwords_to_add}')
+        col2.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
+        col2.markdown(f'**Language added**: {st.session_state.language}')
+    except:
+        col2.markdown(f'No extra stopwords or language have been input >> standard stopwords and English language')
 
     # aggrid
     gd = GridOptionsBuilder.from_dataframe(df)
@@ -89,16 +140,7 @@ if uploaded_file and sheet_name:
             editable=True)
     df_interactive = grid_table['data']
 
-
-        # image = Image.open('images/hands-keyboard.jpg')
-        # st.image(image,
-        #         #  caption='got from Freepick',
-        #         #  use_column_width=True,
-        #         width = 200
-        #         )
-        # col2.dataframe(df)
-
-        # SELECTION BOX AND WORDCLOUD
+    # SELECTION BOX AND WORDCLOUD
     col1, col2 = st.columns(2)
 
     nb_cols = len([i for i in df.columns if i not in ['uid', 'answer']])
@@ -110,54 +152,68 @@ if uploaded_file and sheet_name:
                                     globals()[f'{i}_options'],
                                     default = globals()[f'{i}_options'])
 
-    language = col2.text_input('Stopwords of which language do you want to use? \
-                                (type f.e. "english", "french" etc)', key = 'language')
-    stopwords_to_add = col2.text_input('What stopwords do you want to add? \
-                                    (type words separated by commas)', 
-                                    key = 'stopwords_add')
-    stopwords_to_remove = col2.text_input('What stopwords you would like to remove? \
-                                        (type words separated by commas)', 
-                                        key = 'stopwords_remove')
-
     # --- FILTER DATAFRAME BASED ON SELECTION
     for i in range(nb_cols):
             mask.append((df[df_cols[i]].isin(globals()[f'{i}_selection'])))
 
     df_filtered = df.copy()
-
+    # ADD df_filtered to the current session state:
     if 'df_filtered' not in st.session_state:
         st.session_state.df_filtered = df_filtered
 
     for cond in mask:
-            df_filtered = df_filtered[cond]
-
-    df_filtered['answer'] = df_filtered['answer'].fillna('-')
+        df_filtered = df_filtered[cond]
+        st.session_state.df_filtered = df_filtered
 
     number_of_result = df_filtered.shape[0]
     col2.markdown(f'**Available results:** {number_of_result}')
 
     # STOPWORDS
-    stop_words = set(stopwords.words('english'))
+    language = col2.text_input('Stopwords of which language do you want to use? \
+                                (type f.e. "english", "french" etc)')
+    if language:
+        st.session_state.language = language
+    else:
+        if 'language' not in st.session_state:
+            st.session_state.language = 'english'
 
-    if language != 'english' and language != '':
-            stop_words = set(stopwords.words(language))
+    stop_words = set(stopwords.words(st.session_state.language))
+
+    stopwords_to_add = col2.text_input('What stopwords do you want to add? (type words separated by commas)')
+    stopwords_to_remove = col2.text_input('What stopwords you would like to remove? (type words separated by commas)')
 
     stopwords_to_add_set = set([i.strip().lower() for i in stopwords_to_add.split(',')])
     stopwords_to_remove_set = set([i.strip().lower() for i in stopwords_to_remove.split(',')])
+    # updating session state
+    if stopwords_to_add:
+        st.session_state.stopwords_to_add = stopwords_to_add_set
+    else:
+        if 'stopwords_to_add' not in st.session_state:
+            st.session_state.stopwords_to_add = {}
+    if stopwords_to_remove:
+        st.session_state.stopwords_to_remove = stopwords_to_remove_set
+    else:
+        if 'stopwords_to_remove' not in st.session_state:
+            st.session_state.stopwords_to_remove = {}
 
-    if len(stopwords_to_add_set) > 0 and stopwords_to_add_set != set(['']):
-        stop_words.update(stopwords_to_add_set)
-    if len(stopwords_to_remove_set) > 0 and stopwords_to_remove_set != set(['']):
-        stop_words = stop_words - stopwords_to_remove_set
+    if len(st.session_state.stopwords_to_add) > 0 and st.session_state.stopwords_to_add != set(['']):
+        stop_words.update(st.session_state.stopwords_to_add)
+
+    if len(st.session_state.stopwords_to_remove) > 0 and st.session_state.stopwords_to_remove != set(['']):
+        stop_words = stop_words - st.session_state.stopwords_to_remove
 
     # ---- ADD WORDCLOUD
     col2.text(f'Number of empty answers in the data: {df_filtered.answer.isna().sum()}') 
+    df_filtered['answer'] = df_filtered['answer'].fillna('-')
     corpus = df_filtered.answer.unique().tolist()
     corpus = [i.lower() for i in corpus]
     text = ' '.join(corpus)
 
     for i in ['-', '  ', '’', "\'"]: # drop extra symbols
+        if i != '’':
             text = text.replace(i, '')
+        else:
+            text = text.replace(i, "'")
     # st.text(text)
     text = text.translate(str.maketrans('', '', string.punctuation))
 
@@ -168,61 +224,43 @@ if uploaded_file and sheet_name:
             nltk.download('all')
             text = lemmatize_sentence(text)
 
+    regenerate_wordcloud = col2.button('Regenerate wordcloud')
+
+    def display_wordcloud(wc):
+         # Display the generated image:
+        # https://matplotlib.org/stable/tutorials/intermediate/imshow_extent.html
+        st.set_option('deprecation.showPyplotGlobalUse', False)
+        plt.imshow(wc, interpolation='bilinear')
+        plt.axis("off")
+        plt.show()
+        # Save to file first or an image file has already existed.
+        wc_png = 'wordcloud.png'
+        plt.savefig(wc_png, pad_inches=None , dpi=1200)
+        col2.pyplot()
+        # download button
+        with open(wc_png, "rb") as img:
+                btn = col2.download_button(
+                        label="Download image",
+                        data=img,
+                        file_name=wc_png,
+                        mime="image/png")
+         
     # Create and generate a word cloud image:
+    if 'wordcloud' not in st.session_state:
+        wordcloud = WordCloud(background_color='white',
+                        width=1600, height=1000, 
+                        max_words=len(text),
+                        max_font_size=210, 
+                        relative_scaling=.01,
+                        collocations=False,
+                        stopwords = stop_words).generate(text)
+        st.session_state.wordcloud = wordcloud
+        with col2.spinner('Wait for it...'):
+            display_wordcloud(st.session_state.wordcloud)
 
-    wordcloud = WordCloud(background_color='white',
-                    width=1600, height=1000, 
-                    max_words=len(text),
-                    max_font_size=210, 
-                    relative_scaling=.01,
-                    collocations=False,
-                    stopwords = stop_words).generate(text)
-
-    # Display the generated image:
-    # https://matplotlib.org/stable/tutorials/intermediate/imshow_extent.html
-    st.set_option('deprecation.showPyplotGlobalUse', False)
-    plt.imshow(wordcloud, interpolation='bilinear')
-    plt.axis("off")
-    plt.show()
-    # Save to file first or an image file has already existed.
-    wc = 'wordcloud.png'
-    plt.savefig(wc, pad_inches=None , dpi=1200)
-    col2.pyplot()
-
-
-    with open(wc, "rb") as img:
-            btn = col2.download_button(
-                    label="Download image",
-                    data=img,
-                    file_name=wc,
-                    mime="image/png",
-                    
-            )
-
-# #  --- GROUP DATAFRAME
-# df_grouped = df[mask].groupby('experiment_name').uid.nunique().reset_index()
-# df_grouped.rename(columns={'uid':'nb_uids'}, inplace=True)
-
-
-# bar_chart = px.bar(df_grouped,
-#                    x='experiment_name',
-#                    y = 'nb_uids',
-#                    color_discrete_sequence = ['#F63366']*len(df_grouped),
-#                    template='plotly_white',
-
-#                    )
-# st.plotly_chart(bar_chart)
-
-# age_selection = (30,40)
-# mask = df['age'].between(*age_selection)
-# df[mask]
-
-
-# ages = df.age.unique().tolist()
-# age_selection = st.slider('Age:',
-#           min_value = min(ages),
-#           max_value = max(ages),
-#           value = (min(ages), max(ages)))
+    if 'wordcloud' in st.session_state and regenerate_wordcloud:
+        with col2.spinner('Wait for it...'):
+            display_wordcloud(st.session_state.wordcloud)
 
 
 
