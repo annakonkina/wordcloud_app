@@ -167,6 +167,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     else:
          st.markdown('Default parameters (if you have not input anything yet) or parameters previously set are being used')
 
+    st.markdown('If you want to generate the wordcloud after changing some parameters, please click on [**Regenerate wordcloud**]')
     
 
     # SELECTION BOX AND WORDCLOUD
