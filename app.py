@@ -11,8 +11,8 @@ from nltk.tokenize import word_tokenize
 import nltk
 from nltk.corpus import wordnet
 import string
-from st_aggrid import AgGrid, GridUpdateMode, DataReturnMode, JsCode
-from st_aggrid.grid_options_builder import GridOptionsBuilder
+# from st_aggrid import AgGrid, GridUpdateMode, DataReturnMode, JsCode
+# from st_aggrid.grid_options_builder import GridOptionsBuilder
 
 
 def nltk_pos_tagger(nltk_tag):
@@ -105,34 +105,36 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         #  inputs are not filled
         st.text('You can upload another excel file')
 
-    # aggrid
-    gd = GridOptionsBuilder.from_dataframe(df)
-    gd.configure_pagination(enabled=True)
-    gd.configure_default_column(groupable=True)
-    gd.configure_selection(selection_mode='single',
-                        #    use_ckeckbox=True
-                            )
-    gridOptions = gd.build()
-    grid_table = AgGrid(df,
-                        gridOptions = gridOptions,
-            fit_columns_on_grid_load=True,
-            height=500,
-            width='100%',
-            theme='streamlit',
-            update_mode = GridUpdateMode.GRID_CHANGED,
-            reload_data=True,
-            allow_unsafe_jscode=True,
-            editable=True)
-    df_interactive = grid_table['data']
+    # # aggrid
+    # gd = GridOptionsBuilder.from_dataframe(df)
+    # gd.configure_pagination(enabled=True)
+    # gd.configure_default_column(groupable=True)
+    # gd.configure_selection(selection_mode='single',
+    #                     #    use_ckeckbox=True
+    #                         )
+    # gridOptions = gd.build()
+    # grid_table = AgGrid(df,
+    #                     gridOptions = gridOptions,
+    #         fit_columns_on_grid_load=True,
+    #         height=500,
+    #         width='100%',
+    #         theme='streamlit',
+    #         update_mode = GridUpdateMode.GRID_CHANGED,
+    #         reload_data=True,
+    #         allow_unsafe_jscode=True,
+    #         editable=True)
+    # df_interactive = grid_table['data']
 
-    # # ADDING IMAGE AND DISPLAYING THE DF
-    # col1, col2 = st.columns(2)
-    # image = Image.open('images/hands-keyboard.jpg')
-    # col1.image(image,
-    #         #  caption='got from Freepick',
-    #         #  use_column_width=True,
-    #         width = 400
-    #         )
+    # ADDING IMAGE AND DISPLAYING THE DF
+    col1, col2 = st.columns(2)
+    image = Image.open('images/hands-keyboard.jpg')
+    col1.image(image,
+            #  caption='got from Freepick',
+            #  use_column_width=True,
+            width = 400
+            )
+    col2.dataframe(df)
+
     # EXTRA input form
     extra_form = st.form(key="user_form")
     stopwords_to_add = extra_form.text_input('What stopwords do you want to add? (type words separated by commas)')
