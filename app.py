@@ -133,9 +133,9 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             #  use_column_width=True,
             width = 400
             )
-    submit_extra_input = col2.button('Submit extra stopwords and language')
-
-    if submit_extra_input:
+    if 'submit_extra_input' not in st.session_state:
+        st.session_state.submit_extra_input = False
+    if st.session_state.submit_extra_input:
         col2.markdown(f'**Extra stopwords added**: {st.session_state.stopwords_to_add}')
         col2.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
         col2.markdown(f'**Language added**: {st.session_state.language}')
@@ -190,16 +190,22 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     stopwords_to_add_set = set([i.strip().lower() for i in stopwords_to_add.split(',')])
     stopwords_to_remove_set = set([i.strip().lower() for i in stopwords_to_remove.split(',')])
+
     # updating session state
-    if stopwords_to_add and submit_extra_input:
+    st.session_state.submit_extra_input = False
+    submit_extra_input = col2.button('Submit extra stopwords and language')
+    if submit_extra_input:
+        st.session_state.submit_extra_input = True
+
+    if stopwords_to_add and st.session_state.submit_extra_input:
         st.session_state.stopwords_to_add = stopwords_to_add_set
     else:
-        if 'stopwords_to_add' not in st.session_state or not submit_extra_input:
+        if 'stopwords_to_add' not in st.session_state or not st.session_state.submit_extra_input:
             st.session_state.stopwords_to_add = {}
-    if stopwords_to_remove and submit_extra_input:
+    if stopwords_to_remove and st.session_state.submit_extra_input:
         st.session_state.stopwords_to_remove = stopwords_to_remove_set
     else:
-        if 'stopwords_to_remove' not in st.session_state or not submit_extra_input:
+        if 'stopwords_to_remove' not in st.session_state or not st.session_state.submit_extra_input:
             st.session_state.stopwords_to_remove = {}
 
     if len(st.session_state.stopwords_to_add) > 0 and st.session_state.stopwords_to_add != set(['']):
@@ -207,7 +213,8 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     if len(st.session_state.stopwords_to_remove) > 0 and st.session_state.stopwords_to_remove != set(['']):
         stop_words = stop_words - st.session_state.stopwords_to_remove
-
+    # reset
+    st.session_state.submit_extra_input = False
     # ---- ADD WORDCLOUD
     col2.text(f'Number of empty answers in the data: {df_filtered.answer.isna().sum()}') 
     df_filtered['answer'] = df_filtered['answer'].fillna('-')
