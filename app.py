@@ -133,7 +133,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             #  use_column_width=True,
             width = 400
             )
-    col2.markdown('Overlook at the data:')
+    col2.markdown('Brief look at the data:')
     col2.dataframe(df)
 
     # EXTRA input form
@@ -165,7 +165,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         st.markdown(f'**Language added**: {st.session_state.language}')
         st.markdown("*Standard language is English, if no language added") 
     else:
-         st.markdown('Default parameters is being used')
+         st.markdown('Default parameters (if you have not input anything yet) or parameters previously set are being used')
 
     
 
