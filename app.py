@@ -11,8 +11,7 @@ from nltk.tokenize import word_tokenize
 import nltk
 from nltk.corpus import wordnet
 import string
-# from st_aggrid import AgGrid, GridUpdateMode, DataReturnMode, JsCode
-# from st_aggrid.grid_options_builder import GridOptionsBuilder
+import itertools
 
 
 def nltk_pos_tagger(nltk_tag):
@@ -40,6 +39,16 @@ def lemmatize_sentence(sentence):
             lemmatized_sentence.append(lemmatizer.lemmatize(word, tag))
     return " ".join(lemmatized_sentence)
 
+@st.cache(suppress_st_warning=False)
+def calculate_wordcloud(text):
+    word_cloud = WordCloud(background_color='white',
+                            width=1600, height=1000, 
+                            max_words=len(text),
+                            max_font_size=210, 
+                            relative_scaling=.01,
+                            collocations=False,
+                            stopwords = stop_words).generate(text)
+    return word_cloud
 
 lemmatizer = WordNetLemmatizer() #lemmatizer.lemmatize("rocks")
 tokenizer = RegexpTokenizer(r'\b\w{3,}\b')
@@ -78,8 +87,14 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     #  only if input is in session we continue
     if not submit:
             # case after coming back to page withing the session
-        if 'df_filtered' in st.session_state:
+        if 'df_filtered' in st.session_state and ('refresh_filters' not in st.session_state or not st.session_state.refresh_filters):
             df = st.session_state.df_filtered
+        elif 'df_filtered' in st.session_state and st.session_state.refresh_filters:
+            df = pd.read_excel(st.session_state.uploaded_file,
+                            sheet_name=st.session_state.sheet_name,
+                        #    usecols='A:F',
+                            header=0)
+            st.session_state.df  = df
         else:
             if 'df' not in st.session_state:
                 # first input before df is defined
@@ -105,25 +120,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         #  inputs are not filled
         st.text('You can upload another excel file')
 
-    # # aggrid
-    # gd = GridOptionsBuilder.from_dataframe(df)
-    # gd.configure_pagination(enabled=True)
-    # gd.configure_default_column(groupable=True)
-    # gd.configure_selection(selection_mode='single',
-    #                     #    use_ckeckbox=True
-    #                         )
-    # gridOptions = gd.build()
-    # grid_table = AgGrid(df,
-    #                     gridOptions = gridOptions,
-    #         fit_columns_on_grid_load=True,
-    #         height=500,
-    #         width='100%',
-    #         theme='streamlit',
-    #         update_mode = GridUpdateMode.GRID_CHANGED,
-    #         reload_data=True,
-    #         allow_unsafe_jscode=True,
-    #         editable=True)
-    # df_interactive = grid_table['data']
+    
 
     # ADDING IMAGE AND DISPLAYING THE DF
     col1, col2 = st.columns(2)
@@ -133,7 +130,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             #  use_column_width=True,
             width = 400
             )
-    col2.markdown('Brief look at the data:')
     col2.dataframe(df)
 
     # EXTRA input form
@@ -165,52 +161,89 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         st.markdown(f'**Language added**: {st.session_state.language}')
         st.markdown("*Standard language is English, if no language added") 
     else:
-         st.markdown('Default parameters (if you have not input anything yet) or parameters previously set are being used')
+         st.markdown('Default or previously set parameters are being used')
          st.markdown(f'**Extra stopwords added**: {st.session_state.stopwords_to_add}')
          st.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
          st.markdown(f'**Language added**: {st.session_state.language}')
 
-    st.markdown('If you want to generate the wordcloud after changing some parameters, please click on [**Regenerate wordcloud**]')
-    
-
     # SELECTION BOX AND WORDCLOUD
     col1, col2 = st.columns(2)
+    df['answer'] = df['answer'].fillna('-')
+    nb_ = len(df[df.answer=='-'])
+    if 'empty' not in st.session_state:
+        st.session_state.empty = nb_
+    col2.markdown(f'Number of empty answers in the data: {st.session_state.empty} >> drop for the analysis') 
+    df = df[df.answer != '-']
 
-    nb_cols = len([i for i in df.columns if i not in ['uid', 'answer']])
-    df_cols = [i for i in df.columns if i not in ['uid', 'answer']]
-    mask = []
+    refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
+    if refresh_all_filters:
+        col1.session_state.df_filtered = df.copy()
+
+    # lock the options in the first run
+    if 'nb_cols' not in st.session_state and 'df_cols' not in st.session_state:
+        st.session_state.nb_cols = len([i for i in df.columns if i not in ['uid', 'answer']])
+        st.session_state.df_cols = [i for i in df.columns if i not in ['uid', 'answer']]
+        nb_cols = st.session_state.nb_cols
+        df_cols = st.session_state.df_cols
+    else:
+        nb_cols = st.session_state.nb_cols
+        df_cols = st.session_state.df_cols
+
     for i in range(nb_cols):
-            globals()[f'{i}_options'] = df[df_cols[i]].unique().tolist()
+            if not any(' | ' in str(i) for i in df[df_cols[i]].unique()):
+                globals()[f'{i}_options'] = df[df_cols[i]].unique().tolist()
+            else:
+                options_ = list(itertools.chain.from_iterable([a.split(' | ') for a in set([i for i in df[df_cols[i]].unique()])]))
+                globals()[f'{i}_options'] = [*set(options_)]
+            # adding MULTISELECT for the specific breakout/question:
             globals()[f'{i}_selection'] = col1.multiselect(f'{df_cols[i]}:',
                                     globals()[f'{i}_options'],
-                                    default = globals()[f'{i}_options'])
+                                    default = globals()[f'{i}_options'],
+                                    label_visibility = "hidden")
     # --- FILTER DATAFRAME BASED ON SELECTION
+    mask = []
     for i in range(nb_cols):
+        if not any(' | ' in str(i) for i in df[df_cols[i]].unique()):
             mask.append((df[df_cols[i]].isin(globals()[f'{i}_selection'])))
-
+        else:
+            multi_mask = []
+            for opt in globals()[f'{i}_selection']:
+                multi_mask.append((df[df_cols[i]].str.contains(opt)))
+            mask.append(multi_mask)
+            
     df_filtered = df.copy()
+
     # ADD df_filtered to the current session state:
     if 'df_filtered' not in st.session_state:
         st.session_state.df_filtered = df_filtered
 
     for cond in mask:
-        df_filtered = df_filtered[cond]
-        st.session_state.df_filtered = df_filtered
+        if type(cond) == list:
+            cond_multi = pd.concat(cond, axis=1)
+            cond_x = cond_multi.any(axis='columns')
+            df_filtered = df_filtered[cond_x]
+            st.session_state.df_filtered = df_filtered
+        else:
+            df_filtered = df_filtered[cond]
+            st.session_state.df_filtered = df_filtered
+
 
     number_of_result = df_filtered.shape[0]
     col2.markdown(f'**Available results:** {number_of_result}')
 
-    #STOPWORDS
+
     stop_words = set(stopwords.words(st.session_state.language))
-    if len(st.session_state.stopwords_to_add) > 0 and st.session_state.stopwords_to_add != {''}:
+
+    if len(st.session_state.stopwords_to_add) > 0:
         stop_words.update(st.session_state.stopwords_to_add)
-    if len(st.session_state.stopwords_to_remove) > 0 and st.session_state.stopwords_to_remove != {''}:
+
+    if len(st.session_state.stopwords_to_remove) > 0:
         stop_words = stop_words - st.session_state.stopwords_to_remove
 
+    st.session_state.stop_words = stop_words
+
     # ---- ADD WORDCLOUD
-    df_filtered['answer'] = df_filtered['answer'].fillna('-')
-    nb_ = len(df_filtered[df_filtered.answer=='-'])
-    col2.text(f'Number of empty answers in the data: {nb_}') 
+    
     corpus = df_filtered.answer.unique().tolist()
     corpus = [i.lower() for i in corpus]
     text = ' '.join(corpus)
@@ -230,55 +263,23 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             nltk.download('all')
             text = lemmatize_sentence(text)
 
-    regenerate_wordcloud = col2.button('Regenerate wordcloud', key = 'regenerate_button')
 
-    def display_wordcloud(wc):
-         # Display the generated image:
-        # https://matplotlib.org/stable/tutorials/intermediate/imshow_extent.html
-        st.set_option('deprecation.showPyplotGlobalUse', False)
-        plt.imshow(wc, interpolation='bilinear')
-        plt.axis("off")
-        plt.show()
-        # Save to file first or an image file has already existed.
-        wc_png = 'wordcloud.png'
-        plt.savefig(wc_png, pad_inches=None , dpi=1200)
-        col2.pyplot()
-        # download button
-        with open(wc_png, "rb") as img:
-            btn = col2.download_button(
-                        label="Download image",
-                        data=img,
-                        file_name=wc_png,
-                        mime="image/png",
-                        key='download_button')
-         
     # Create and generate a word cloud image:
-    if 'wordcloud' not in st.session_state:
+    if 'wordcloud' not in st.session_state:    
         with st.spinner('Wait for it...'):
-            wordcloud = WordCloud(background_color='white',
-                            width=1600, height=1000, 
-                            max_words=len(text),
-                            max_font_size=210, 
-                            relative_scaling=.01,
-                            collocations=False,
-                            stopwords = stop_words).generate(text)
+            wordcloud = calculate_wordcloud(text)
         st.session_state.wordcloud = wordcloud
         with st.spinner('Wait for it...'):
             display_wordcloud(st.session_state.wordcloud)
+            
     
+    regenerate_wordcloud = col2.button('Regenerate wordcloud')
     if regenerate_wordcloud:
         with st.spinner('Wait for it...'):
-            wordcloud = WordCloud(background_color='white',
-                            width=1600, height=1000, 
-                            max_words=len(text),
-                            max_font_size=210, 
-                            relative_scaling=.01,
-                            collocations=False,
-                            stopwords = stop_words).generate(text)
+            wordcloud = calculate_wordcloud(text)
         st.session_state.wordcloud = wordcloud
         with st.spinner('Wait for it...'):
             display_wordcloud(st.session_state.wordcloud)
-
 
 
 
