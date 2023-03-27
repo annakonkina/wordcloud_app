@@ -95,12 +95,12 @@ if uploaded_file and sheet_name and submit:
         st.session_state.uploaded_file = uploaded_file
         st.session_state.sheet_name = sheet_name
 elif uploaded_file and sheet_name and not submit:
-    st.text('You can upload another excel file')
+    st.text('You can upload another excel file or press "Submit"')
 elif not uploaded_file and not sheet_name and not submit and 'uploaded_file' in st.session_state and 'sheet_name' in  st.session_state:
-    st.text('You can upload another excel file')
+    st.text('You can upload another excel file or press "Submit"')
 else:
     #  inputs are not filled
-    st.text('Please upload excel file')
+    st.text('Please upload excel file or press "Submit"')
 
 if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     #  only if input is in session we continue
@@ -137,7 +137,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     else:
         #  inputs are not filled
-        st.text('You can upload another excel file')
+        st.text('You can upload another excel file or press "Submit"')
 
     
 
