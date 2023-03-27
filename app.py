@@ -57,8 +57,8 @@ tokenizer = RegexpTokenizer(r'\b\w{3,}\b')
 # Load the model (only executed once!)
 # Don't set ttl or max_entries in this case
 
-# nltk.download('stopwords')
-# nltk.download('punkt') 
+nltk.download('stopwords')
+nltk.download('punkt') 
 
 st.set_page_config(page_title = 'Verbatims analysis', layout="wide")
 st.header('Verbatims analysis')
