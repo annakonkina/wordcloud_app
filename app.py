@@ -50,6 +50,25 @@ def calculate_wordcloud(text):
                             stopwords = stop_words).generate(text)
     return word_cloud
 
+def display_wordcloud(wc):
+    # Display the generated image:
+    # https://matplotlib.org/stable/tutorials/intermediate/imshow_extent.html
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+    plt.imshow(wc, interpolation='bilinear')
+    plt.axis("off")
+    plt.show()
+    # Save to file first or an image file has already existed.
+    wc_png = 'wordcloud.png'
+    plt.savefig(wc_png, pad_inches=None , dpi=1200)
+    col2.pyplot()
+
+    with open(wc_png, "rb") as img:
+        btn = col2.download_button(
+                            label="Download image",
+                            data=img,
+                            file_name=wc_png,
+                            mime="image/png")
+        
 lemmatizer = WordNetLemmatizer() #lemmatizer.lemmatize("rocks")
 tokenizer = RegexpTokenizer(r'\b\w{3,}\b')
 
