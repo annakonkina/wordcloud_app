@@ -292,7 +292,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             display_wordcloud(st.session_state.wordcloud)
             
     
-    regenerate_wordcloud = col2.button('Regenerate wordcloud')
+    regenerate_wordcloud = col2.button('Generate wordcloud (or regenerate to refresh)')
     if regenerate_wordcloud:
         with st.spinner('Wait for it...'):
             wordcloud = calculate_wordcloud(text)
