@@ -130,6 +130,13 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
                             sheet_name=st.session_state.sheet_name,
                         #    usecols='A:F',
                             header=0)
+                if df.iloc[0, 0] == 'Go to Summary':
+                    # in case the uploaded file has a structure of excel with LINKS and the button = 'Go to Summary':
+                    st.text('Its a summary type excel...')
+                    df.columns = df.iloc[0, :].values
+                    df = df.iloc[1:, :]
+                    df = df.drop(columns = ['Go to Summary'])
+
                 st.session_state.df  = df
             else:
                 st.text('smth not expected line 79, because df_filtered should be defined anyway')
