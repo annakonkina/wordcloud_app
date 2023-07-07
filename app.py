@@ -274,12 +274,12 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             cond_x = cond_multi.any(axis='columns')
             df_filtered_x = st.session_state.df_filtered[cond_x]
             st.text(len(df_filtered_x.index.values))
-            index_filter += df_filtered_x.index.values.tolist()
+            index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
             # st.session_state.df_filtered = df_filtered_x
         else:
             df_filtered_x = st.session_state.df_filtered[cond]
             st.text(len(df_filtered_x.index.values))
-            index_filter += df_filtered_x.index.values.tolist()
+            index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
             # st.session_state.df_filtered = df_filtered_x
     index_filter = [*set(index_filter)]
     st.text(len(index_filter))
