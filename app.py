@@ -230,11 +230,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     if refresh_all_filters:
         st.session_state.df_filtered = st.session_state.df.copy()
 
-    if st.button('Say hello'):
-        st.write('Why hello there')
-    else:
-        st.write('Goodbye')
-
 
     for col in st.session_state.df_cols:
         if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
@@ -286,7 +281,14 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     index_filter = [*set(index_filter)]
     st.text(len(index_filter))
 
-    df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
+    with st.form("my_form"):
+        st.write("Inside the form")
+        # Every form must have a submit button.
+        submitted = st.form_submit_button("Submit filter")
+        if submitted:
+            df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
+
+    
 
 
     col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
