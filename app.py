@@ -226,9 +226,9 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         st.session_state.df_cols = [i for i in st.session_state.df.columns if i not in ['uid', 'answer']]
 
 
-    refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
-    if refresh_all_filters:
-        st.session_state.df_filtered = st.session_state.df.copy()
+    # refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
+    # if refresh_all_filters:
+    #     st.session_state.df_filtered = st.session_state.df.copy()
 
 
     for col in st.session_state.df_cols:
@@ -284,13 +284,28 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     with st.form("my_form"):
         st.write("Inside the form")
         # Every form must have a submit button.
-        submitted = st.form_submit_button("Submit filter")
+        submitted = st.form_submit_button("Submit filter refresh")
         if submitted:
-            df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
+            df_filtered_to_use = st.session_state.df_filtered.copy()
+            for col in st.session_state.df_cols:
+                if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
+                    globals()[f'{col}_options'] = st.session_state.df[col].unique().tolist()
+                else:
+                    options_ = list(itertools.chain.from_iterable([a.split(' | ') 
+                                        for a in set([i for i in st.session_state.df[col].unique()])]))
+                    globals()[f'{col}_options'] = [*set(options_)]
+
+                # adding MULTISELECT for the specific breakout/question:
+                globals()[f'{col}_selection'] = col1.multiselect(f'{col}:',
+                                        globals()[f'{col}_options'],
+                                        default = globals()[f'{col}_options'],
+                                        label_visibility = "collapsed")
+        else:
+            pass
 
     
 
-
+    df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
     col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
     st.text(st.session_state.df_filtered.shape)
 
