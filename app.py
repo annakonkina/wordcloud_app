@@ -280,7 +280,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             st.text(df_filtered_x.shape)
             index_filter.append(df_filtered_x.index.values.tolist())
             # st.session_state.df_filtered = df_filtered_x
-    index_filter = [*set(index_filter)]
+    # index_filter = [*set(index_filter)]
     st.text(len(index_filter))
 
     # number_of_result = df_filtered_x.shape[0]
