@@ -259,25 +259,25 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
                 multi_mask.append((st.session_state.df[col].str.contains(opt)))
             mask.append(multi_mask)
             
-    # # df_filtered = df.copy()
+    # df_filtered = df.copy()
 
     # ADD df_filtered to the current session state:
     if 'df_filtered' not in st.session_state:
         st.session_state.df_filtered = st.session_state.df.copy() #was df_filtered.copy()
     
-    st.text(f'shape: {st.session_state.df_filtered.shape}')
+    #here df_filtered is still ok
 
-    # #here df_filtered is still ok
-
-    # for cond in mask:
-    #     if type(cond) == list:
-    #         cond_multi = pd.concat(cond, axis=1)
-    #         cond_x = cond_multi.any(axis='columns')
-    #         df_filtered_x = st.session_state.df_filtered[cond_x]#was df_filtered
-    #         # st.session_state.df_filtered = df_filtered_x
-    #     else:
-    #         df_filtered_x = st.session_state.df_filtered[cond]#was df_filtered
-    #         # st.session_state.df_filtered = df_filtered_x
+    for cond in mask:
+        if type(cond) == list:
+            cond_multi = pd.concat(cond, axis=1)
+            cond_x = cond_multi.any(axis='columns')
+            df_filtered_x = st.session_state.df_filtered[cond_x]
+            st.text(f'{df_filtered_x.shape}')
+            # st.session_state.df_filtered = df_filtered_x
+        else:
+            df_filtered_x = st.session_state.df_filtered[cond]
+            st.text(f'{df_filtered_x.shape}')
+            # st.session_state.df_filtered = df_filtered_x
 
 
     # number_of_result = df_filtered_x.shape[0]
