@@ -224,13 +224,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     if 'nb_cols' not in st.session_state and 'df_cols' not in st.session_state:
         st.session_state.nb_cols = len([i for i in st.session_state.df.columns if i not in ['uid', 'answer']])
         st.session_state.df_cols = [i for i in st.session_state.df.columns if i not in ['uid', 'answer']]
-    #     nb_cols = st.session_state.nb_cols
-    #     df_cols = st.session_state.df_cols
-    # else:
-    #     nb_cols = st.session_state.nb_cols
-    #     df_cols = st.session_state.df_cols
-
-
 
 
     # refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
@@ -238,14 +231,14 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     #     st.session_state.df_filtered = st.session_state.df.copy()
 
 
-    for i in range(st.session_state.nb_cols):
-        st.text(i)
-        # if not any(' | ' in str(i) for i in st.session_state.df[df_cols[i]].unique()):
-        #     globals()[f'{i}_options'] = st.session_state.df[df_cols[i]].unique().tolist()
-        # else:
-        #     options_ = list(itertools.chain.from_iterable([a.split(' | ') 
-        #                         for a in set([i for i in st.session_state.df[df_cols[i]].unique()])]))
-        #     globals()[f'{i}_options'] = [*set(options_)]
+    for col in range(st.session_state.df_cols):
+        st.text(col)
+        if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
+            globals()[f'{col}_options'] = st.session_state.df[col].unique().tolist()
+        else:
+            options_ = list(itertools.chain.from_iterable([a.split(' | ') 
+                                for a in set([i for i in st.session_state.df[col].unique()])]))
+            globals()[f'{i}_options'] = [*set(options_)]
 
     #     # adding MULTISELECT for the specific breakout/question:
     #     globals()[f'{i}_selection'] = col1.multiselect(f'{df_cols[i]}:',
