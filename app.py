@@ -216,7 +216,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     col2.markdown(f'Number of empty answers in the data: {st.session_state.empty} >> drop for the analysis') 
 
     st.session_state.df['answer'] = st.session_state.df['answer'].fillna('-')
-    st.session_state.df = st.session_state.df[st.session_state.df.answer != '-']
+    st.session_state.df= st.session_state.df[st.session_state.df['answer'] != '-']
     col2.markdown(f'Nb of respondents in the data: {st.session_state.df.uid.nunique()}') #ok
     col2.markdown(f'Shape of current data: {st.session_state.df.shape}') #ok
 
@@ -282,7 +282,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
             # st.session_state.df_filtered = df_filtered_x
     index_filter = [*set(index_filter)]
-    st.text(len(index_filter))
+    st.text(index_filter)
 
     # number_of_result = df_filtered_x.shape[0]
     # col2.markdown(f'**Available results:** {number_of_result}')
