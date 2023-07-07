@@ -275,13 +275,13 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             cond_multi = pd.concat(cond, axis=1)
             cond_x = cond_multi.any(axis='columns')
             df_filtered_x = st.session_state.df_filtered[cond_x]#was df_filtered
-            st.session_state.df_filtered = df_filtered_x
+            # st.session_state.df_filtered = df_filtered_x
         else:
             df_filtered_x = st.session_state.df_filtered[cond]#was df_filtered
-            st.session_state.df_filtered = df_filtered_x
+            # st.session_state.df_filtered = df_filtered_x
 
 
-    number_of_result = st.session_state.df_filtered.shape[0]
+    number_of_result = df_filtered_x.shape[0]
     col2.markdown(f'**Available results:** {number_of_result}')
 
 
@@ -297,7 +297,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     # ---- ADD WORDCLOUD
     
-    corpus = st.session_state.df_filtered.answer.unique().tolist() #was df_filtered, change 07.07.23 16:34
+    corpus = df_filtered_x.answer.unique().tolist() #was df_filtered, change 07.07.23 16:34
     corpus = [i.lower() for i in corpus]
     text = ' '.join(corpus)
     col2.markdown(f'Total nb of words: {len(text)}')
