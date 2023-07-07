@@ -261,20 +261,20 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     if 'df_filtered' not in st.session_state:
         st.session_state.df_filtered = df_filtered
 
-    col2.markdown(f'Nb of respondents in the df_filtered: {st.session_state.df_filtered.uid.nunique()}')
+    #here df_filtered is still ok
 
     for cond in mask:
         if type(cond) == list:
             cond_multi = pd.concat(cond, axis=1)
             cond_x = cond_multi.any(axis='columns')
-            df_filtered = df_filtered[cond_x]
-            st.session_state.df_filtered = df_filtered
+            df_filtered_x = df_filtered[cond_x]
+            st.session_state.df_filtered = df_filtered_x
         else:
-            df_filtered = df_filtered[cond]
-            st.session_state.df_filtered = df_filtered
+            df_filtered_x = df_filtered[cond]
+            st.session_state.df_filtered = df_filtered_x
 
 
-    number_of_result = df_filtered.shape[0]
+    number_of_result = st.session_state.df_filtered.shape[0]
     col2.markdown(f'**Available results:** {number_of_result}')
 
 
