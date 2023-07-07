@@ -254,11 +254,13 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
             mask.append((st.session_state.df[col].isin(globals()[f'{col}_selection'])))
             st.text(col)
-            st.text((st.session_state.df[col].isin(globals()[f'{col}_selection'])))
+            st.text(sum(st.session_state.df[col].isin(globals()[f'{col}_selection'])))
         else:
             multi_mask = []
             for opt in globals()[f'{col}_selection']:
                 multi_mask.append((st.session_state.df[col].str.contains(opt)))
+                st.text(col)
+                st.text(sum(st.session_state.df[col].str.contains(opt)))
             mask.append(multi_mask)
             
     # df_filtered = df.copy()
