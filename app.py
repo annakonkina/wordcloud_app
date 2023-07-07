@@ -50,6 +50,7 @@ def calculate_wordcloud(text):
                             stopwords = stop_words).generate(text)
     return word_cloud
 
+
 def display_wordcloud(wc):
     # Display the generated image:
     # https://matplotlib.org/stable/tutorials/intermediate/imshow_extent.html
@@ -205,7 +206,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
          st.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
          st.markdown(f'**Language added**: {st.session_state.language}')
 
-
+    ## _____________________________________________________________________________________________________________
     # SELECTION BOX AND WORDCLOUD
     col1, col2 = st.columns(2)
     df['answer'] = df['answer'].fillna('-')
@@ -219,10 +220,11 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     col2.markdown(f'Nb of respondents in the data: {st.session_state.df.uid.nunique()}') #ok
     col2.markdown(f'Shape of current data: {st.session_state.df.shape}') #ok
 
+    st.session_state.df_filtered = st.session_state.df.copy()
 
     refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
     if refresh_all_filters:
-        col1.session_state.df_filtered = st.session_state.df.copy()
+        st.session_state.df_filtered = st.session_state.df.copy()
 
 
     # lock the options in the first run
