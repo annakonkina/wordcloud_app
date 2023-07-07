@@ -231,7 +231,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     #     st.session_state.df_filtered = st.session_state.df.copy()
 
 
-    for col in range(st.session_state.df_cols):
+    for col in st.session_state.df_cols:
         st.text(col)
         if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
             globals()[f'{col}_options'] = st.session_state.df[col].unique().tolist()
