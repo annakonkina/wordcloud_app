@@ -279,9 +279,9 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
             # st.session_state.df_filtered = df_filtered_x
     index_filter = [*set(index_filter)]
-    st.session_state.df_filtered = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
+    df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
     
-    col2.markdown(f'**Available results:** {len(st.session_state.df_filtered)}')
+    col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
 
 
     # stop_words = set(stopwords.words(st.session_state.language))
