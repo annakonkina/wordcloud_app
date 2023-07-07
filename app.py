@@ -226,9 +226,9 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         st.session_state.df_cols = [i for i in st.session_state.df.columns if i not in ['uid', 'answer']]
 
 
-    # refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
-    # if refresh_all_filters:
-    #     st.session_state.df_filtered = st.session_state.df.copy()
+    refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
+    if refresh_all_filters:
+        st.session_state.df_filtered = st.session_state.df.copy()
 
 
     for col in st.session_state.df_cols:
@@ -272,19 +272,16 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             cond_multi = pd.concat(cond, axis=1)
             cond_x = cond_multi.any(axis='columns')
             df_filtered_x = st.session_state.df_filtered[cond_x]
-            st.text(len(df_filtered_x.index.values))
             index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
             # st.session_state.df_filtered = df_filtered_x
         else:
             df_filtered_x = st.session_state.df_filtered[cond]
-            st.text(len(df_filtered_x.index.values))
             index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
             # st.session_state.df_filtered = df_filtered_x
     index_filter = [*set(index_filter)]
-    st.text(len(index_filter))
-
-    # number_of_result = df_filtered_x.shape[0]
-    # col2.markdown(f'**Available results:** {number_of_result}')
+    st.session_state.df_filtered = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
+    
+    col2.markdown(f'**Available results:** {len(st.session_state.df_filtered)}')
 
 
     # stop_words = set(stopwords.words(st.session_state.language))
