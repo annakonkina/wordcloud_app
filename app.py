@@ -230,6 +230,11 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     if refresh_all_filters:
         st.session_state.df_filtered = st.session_state.df.copy()
 
+    if st.button('Say hello'):
+        st.write('Why hello there')
+    else:
+        st.write('Goodbye')
+
 
     for col in st.session_state.df_cols:
         if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
@@ -282,10 +287,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     st.text(len(index_filter))
 
     df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
-    
-    refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
-    if refresh_all_filters:
-        st.session_state.df_filtered = st.session_state.df.copy()
 
 
     col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
