@@ -261,7 +261,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     
     #here df_filtered is still ok
     index_filter = st.session_state.df_filtered.index.values.tolist()
-    st.text(len(index_filter))
+    # st.text(len(index_filter))
     for cond in mask:
         if type(cond) == list:
             cond_multi = pd.concat(cond, axis=1)
@@ -274,12 +274,12 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
             # st.session_state.df_filtered = df_filtered_x
     index_filter = [*set(index_filter)]
-    st.text(len(index_filter))
+    # st.text(len(index_filter))
 
     
     df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
     col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
-    st.text(st.session_state.df_filtered.shape)
+    # st.text(st.session_state.df_filtered.shape)
 
     # till now al the filters are working fine. Without reloading the page we can play with them, removing and choosing 
     # again and they are changing the available results back to the original
