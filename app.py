@@ -290,7 +290,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     # ---- ADD WORDCLOUD
     
-    corpus = df_filtered.answer.unique().tolist()
+    corpus = st.session_state.df_filtered.answer.unique().tolist() #was df_filtered, change 07.07.23 16:34
     corpus = [i.lower() for i in corpus]
     text = ' '.join(corpus)
 
