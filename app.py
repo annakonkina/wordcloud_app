@@ -164,7 +164,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             #  use_column_width=True,
             width = 400
             )
-    col2.dataframe(df)
+    col2.dataframe(st.session_state.df)
 
     # EXTRA input form
     extra_form = st.form(key="user_form")
