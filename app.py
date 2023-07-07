@@ -232,7 +232,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
 
     for col in st.session_state.df_cols:
-        st.text(col)
         if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
             globals()[f'{col}_options'] = st.session_state.df[col].unique().tolist()
         else:
@@ -244,26 +243,29 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         globals()[f'{col}_selection'] = col1.multiselect(f'{col}:',
                                 globals()[f'{col}_options'],
                                 default = globals()[f'{col}_options'],
-                                label_visibility = "hidden")
+                                label_visibility = "collapsed")
         
-    # # --- FILTER DATAFRAME BASED ON SELECTION
-    # mask = []
-    # for i in range(nb_cols):
-    #     if not any(' | ' in str(i) for i in st.session_state.df[df_cols[i]].unique()):
-    #         mask.append((st.session_state.df[df_cols[i]].isin(globals()[f'{i}_selection'])))
-    #     else:
-    #         multi_mask = []
-    #         for opt in globals()[f'{i}_selection']:
-    #             multi_mask.append((st.session_state.df[df_cols[i]].str.contains(opt)))
-    #         mask.append(multi_mask)
+    # so far we just created the multiselct objects themselves, which are not connected to the data. 
+    # next we need to actually filter out dataframe and connect it to the wordcloud function
+        
+    # --- FILTER DATAFRAME BASED ON SELECTION
+    mask = []
+    for col in range(st.session_state.df_cols):
+        if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
+            mask.append((st.session_state.df[col].isin(globals()[f'{col}_selection'])))
+        else:
+            multi_mask = []
+            for opt in globals()[f'{col}_selection']:
+                multi_mask.append((st.session_state.df[col].str.contains(opt)))
+            mask.append(multi_mask)
             
     # # df_filtered = df.copy()
-    # st.session_state.df_filtered = st.session_state.df.copy()
 
-    # # ADD df_filtered to the current session state:
-    # if 'df_filtered' not in st.session_state:
-    #     st.session_state.df_filtered = df.copy() #was df_filtered.copy()
+    # ADD df_filtered to the current session state:
+    if 'df_filtered' not in st.session_state:
+        st.session_state.df_filtered = st.session_state.df.copy() #was df_filtered.copy()
     
+    st.text(f'shape: {st.session_state.df_filtered.shape}')
 
     # #here df_filtered is still ok
 
