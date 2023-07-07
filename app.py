@@ -238,14 +238,14 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     #     st.session_state.df_filtered = st.session_state.df.copy()
 
 
-    for i in range(nb_cols):
+    for i in range(st.session_state.nb_cols):
         st.text(i)
-        if not any(' | ' in str(i) for i in st.session_state.df[df_cols[i]].unique()):
-            globals()[f'{i}_options'] = st.session_state.df[df_cols[i]].unique().tolist()
-        else:
-            options_ = list(itertools.chain.from_iterable([a.split(' | ') 
-                                for a in set([i for i in st.session_state.df[df_cols[i]].unique()])]))
-            globals()[f'{i}_options'] = [*set(options_)]
+        # if not any(' | ' in str(i) for i in st.session_state.df[df_cols[i]].unique()):
+        #     globals()[f'{i}_options'] = st.session_state.df[df_cols[i]].unique().tolist()
+        # else:
+        #     options_ = list(itertools.chain.from_iterable([a.split(' | ') 
+        #                         for a in set([i for i in st.session_state.df[df_cols[i]].unique()])]))
+        #     globals()[f'{i}_options'] = [*set(options_)]
 
     #     # adding MULTISELECT for the specific breakout/question:
     #     globals()[f'{i}_selection'] = col1.multiselect(f'{df_cols[i]}:',
