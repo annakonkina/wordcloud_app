@@ -269,10 +269,10 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         if type(cond) == list:
             cond_multi = pd.concat(cond, axis=1)
             cond_x = cond_multi.any(axis='columns')
-            df_filtered_x = df_filtered[cond_x]
+            df_filtered_x = st.session_state.df_filtered[cond_x]#was df_filtered
             st.session_state.df_filtered = df_filtered_x
         else:
-            df_filtered_x = df_filtered[cond]
+            df_filtered_x = st.session_state.df_filtered[cond]#was df_filtered
             st.session_state.df_filtered = df_filtered_x
 
 
