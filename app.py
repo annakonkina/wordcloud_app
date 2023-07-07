@@ -238,7 +238,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         else:
             options_ = list(itertools.chain.from_iterable([a.split(' | ') 
                                 for a in set([i for i in st.session_state.df[col].unique()])]))
-            globals()[f'{i}_options'] = [*set(options_)]
+            globals()[f'{col}_options'] = [*set(options_)]
 
     #     # adding MULTISELECT for the specific breakout/question:
     #     globals()[f'{i}_selection'] = col1.multiselect(f'{df_cols[i]}:',
