@@ -255,11 +255,11 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
                 multi_mask.append((df[df_cols[i]].str.contains(opt)))
             mask.append(multi_mask)
             
-    df_filtered = df.copy()
+    df_filtered = st.session_state.df.copy()
 
     # ADD df_filtered to the current session state:
     if 'df_filtered' not in st.session_state:
-        st.session_state.df_filtered = df_filtered
+        st.session_state.df_filtered = df_filtered.copy()
 
     #here df_filtered is still ok
 
@@ -293,6 +293,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     corpus = st.session_state.df_filtered.answer.unique().tolist() #was df_filtered, change 07.07.23 16:34
     corpus = [i.lower() for i in corpus]
     text = ' '.join(corpus)
+    col2.markdown(f'Total nb of words: {len(text)}')
 
     for i in ['-', '  ', '’', "\'"]: # drop extra symbols
         if i != '’':
