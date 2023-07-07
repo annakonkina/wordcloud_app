@@ -283,8 +283,15 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
     
+    refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
+    if refresh_all_filters:
+        st.session_state.df_filtered = st.session_state.df.copy()
+
+
     col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
     st.text(st.session_state.df_filtered.shape)
+
+    
 
 
     # stop_words = set(stopwords.words(st.session_state.language))
