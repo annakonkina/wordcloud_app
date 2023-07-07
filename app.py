@@ -226,11 +226,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         st.session_state.df_cols = [i for i in st.session_state.df.columns if i not in ['uid', 'answer']]
 
 
-    # refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
-    # if refresh_all_filters:
-    #     st.session_state.df_filtered = st.session_state.df.copy()
-
-
     for col in st.session_state.df_cols:
         if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
             globals()[f'{col}_options'] = st.session_state.df[col].unique().tolist()
@@ -281,8 +276,12 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     index_filter = [*set(index_filter)]
     st.text(len(index_filter))
 
+    
+    df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
+    col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
+    st.text(st.session_state.df_filtered.shape)
+
     with st.form("my_form"):
-        st.write("Inside the form")
         # Every form must have a submit button.
         submitted = st.form_submit_button("Submit filter refresh")
         if submitted:
@@ -300,16 +299,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
                                         globals()[f'{col}_options'],
                                         default = globals()[f'{col}_options'],
                                         label_visibility = "collapsed")
-        else:
-            pass
-
-    
-
-    df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
-    col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
-    st.text(st.session_state.df_filtered.shape)
-
-    
 
 
     # stop_words = set(stopwords.words(st.session_state.language))
