@@ -220,7 +220,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     col2.markdown(f'Nb of respondents in the data: {st.session_state.df.uid.nunique()}') #ok
     col2.markdown(f'Shape of current data: {st.session_state.df.shape}') #ok
 
-    st.session_state.df_filtered = st.session_state.df.copy()
 
     refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
     if refresh_all_filters:
@@ -229,8 +228,8 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     # lock the options in the first run
     if 'nb_cols' not in st.session_state and 'df_cols' not in st.session_state:
-        st.session_state.nb_cols = len([i for i in df.columns if i not in ['uid', 'answer']])
-        st.session_state.df_cols = [i for i in df.columns if i not in ['uid', 'answer']]
+        st.session_state.nb_cols = len([i for i in st.session_state.df.columns if i not in ['uid', 'answer']])
+        st.session_state.df_cols = [i for i in st.session_state.df.columns if i not in ['uid', 'answer']]
         nb_cols = st.session_state.nb_cols
         df_cols = st.session_state.df_cols
     else:
@@ -238,11 +237,11 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         df_cols = st.session_state.df_cols
 
     for i in range(nb_cols):
-        if not any(' | ' in str(i) for i in df[df_cols[i]].unique()):
-            globals()[f'{i}_options'] = df[df_cols[i]].unique().tolist()
+        if not any(' | ' in str(i) for i in st.session_state.df[df_cols[i]].unique()):
+            globals()[f'{i}_options'] = st.session_state.df[df_cols[i]].unique().tolist()
         else:
             options_ = list(itertools.chain.from_iterable([a.split(' | ') 
-                                for a in set([i for i in df[df_cols[i]].unique()])]))
+                                for a in set([i for i in st.session_state.df[df_cols[i]].unique()])]))
             globals()[f'{i}_options'] = [*set(options_)]
         # adding MULTISELECT for the specific breakout/question:
         globals()[f'{i}_selection'] = col1.multiselect(f'{df_cols[i]}:',
@@ -253,15 +252,16 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     # --- FILTER DATAFRAME BASED ON SELECTION
     mask = []
     for i in range(nb_cols):
-        if not any(' | ' in str(i) for i in df[df_cols[i]].unique()):
-            mask.append((df[df_cols[i]].isin(globals()[f'{i}_selection'])))
+        if not any(' | ' in str(i) for i in st.session_state.df[df_cols[i]].unique()):
+            mask.append((st.session_state.df[df_cols[i]].isin(globals()[f'{i}_selection'])))
         else:
             multi_mask = []
             for opt in globals()[f'{i}_selection']:
-                multi_mask.append((df[df_cols[i]].str.contains(opt)))
+                multi_mask.append((st.session_state.df[df_cols[i]].str.contains(opt)))
             mask.append(multi_mask)
             
     # df_filtered = df.copy()
+    st.session_state.df_filtered = st.session_state.df.copy()
 
     # ADD df_filtered to the current session state:
     if 'df_filtered' not in st.session_state:
