@@ -266,7 +266,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         st.session_state.df_filtered = st.session_state.df.copy() #was df_filtered.copy()
     
     #here df_filtered is still ok
-    index_filter = []
+    index_filter = st.session_state.df_filtered.index.values.tolist()
     st.text(len(index_filter))
     for cond in mask:
         if type(cond) == list:
@@ -282,7 +282,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
             # st.session_state.df_filtered = df_filtered_x
     index_filter = [*set(index_filter)]
-    st.text(index_filter)
+    st.text(len(index_filter))
 
     # number_of_result = df_filtered_x.shape[0]
     # col2.markdown(f'**Available results:** {number_of_result}')
