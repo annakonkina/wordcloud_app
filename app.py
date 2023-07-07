@@ -244,6 +244,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
                                 globals()[f'{i}_options'],
                                 default = globals()[f'{i}_options'],
                                 label_visibility = "hidden")
+        
     # --- FILTER DATAFRAME BASED ON SELECTION
     mask = []
     for i in range(nb_cols):
@@ -255,7 +256,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
                 multi_mask.append((df[df_cols[i]].str.contains(opt)))
             mask.append(multi_mask)
             
-    df_filtered = st.session_state.df.copy()
+    df_filtered = df.copy()
 
     # ADD df_filtered to the current session state:
     if 'df_filtered' not in st.session_state:
