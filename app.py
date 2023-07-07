@@ -205,6 +205,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
          st.markdown(f'**Extra stopwords removed**: {st.session_state.stopwords_to_remove}')
          st.markdown(f'**Language added**: {st.session_state.language}')
 
+
     # SELECTION BOX AND WORDCLOUD
     col1, col2 = st.columns(2)
     df['answer'] = df['answer'].fillna('-')
@@ -212,14 +213,15 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     if 'empty' not in st.session_state:
         st.session_state.empty = nb_
     col2.markdown(f'Number of empty answers in the data: {st.session_state.empty} >> drop for the analysis') 
-    df = df[df.answer != '-']
+
+    st.session_state.df['answer'] = st.session_state.df['answer'].fillna('-')
+    st.session_state.df = st.session_state.df[st.session_state.df.answer != '-']
     col2.markdown(f'Nb of respondents in the data: {st.session_state.df.uid.nunique()}') #ok
 
 
     refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
     if refresh_all_filters:
-        col1.session_state.df_filtered = df.copy()
-    
+        col1.session_state.df_filtered = st.session_state.df.copy()
 
 
     # lock the options in the first run
@@ -265,7 +267,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     #here df_filtered is still ok
     for i in range(nb_cols):
-        i_ = globals()[f'{i}_selection']
+        i_ = globals()[f'{i}_selection']#f.e. 'Male' or '40 - 55'
         col2.markdown(f'{i_}')
         
 
@@ -313,10 +315,10 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     # LEMMATIZE
     try:
-            text = lemmatize_sentence(text)
+        text = lemmatize_sentence(text)
     except:
-            nltk.download('all')
-            text = lemmatize_sentence(text)
+        nltk.download('all')
+        text = lemmatize_sentence(text)
 
 
     # Create and generate a word cloud image:
