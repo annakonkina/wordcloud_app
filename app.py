@@ -240,11 +240,11 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
                                 for a in set([i for i in st.session_state.df[col].unique()])]))
             globals()[f'{col}_options'] = [*set(options_)]
 
-    #     # adding MULTISELECT for the specific breakout/question:
-    #     globals()[f'{i}_selection'] = col1.multiselect(f'{df_cols[i]}:',
-    #                             globals()[f'{i}_options'],
-    #                             default = globals()[f'{i}_options'],
-    #                             label_visibility = "hidden")
+        # adding MULTISELECT for the specific breakout/question:
+        globals()[f'{col}_selection'] = col1.multiselect(f'{col}:',
+                                globals()[f'{col}_options'],
+                                default = globals()[f'{col}_options'],
+                                label_visibility = "hidden")
         
     # # --- FILTER DATAFRAME BASED ON SELECTION
     # mask = []
