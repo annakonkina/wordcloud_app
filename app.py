@@ -207,12 +207,13 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
 
     # SELECTION BOX AND WORDCLOUD
     col1, col2 = st.columns(2)
-    st.session_state.df['answer'] = st.session_state.df['answer'].fillna('-')# was df, change (7.7.23 4:14)
-    nb_ = len(st.session_state.df[st.session_state.df['answer']=='-'])# was df, change (7.7.23 4:14)
+    df['answer'] = df['answer'].fillna('-')
+    nb_ = len(df[df['answer']=='-'])
     if 'empty' not in st.session_state:
         st.session_state.empty = nb_
     col2.markdown(f'Number of empty answers in the data: {st.session_state.empty} >> drop for the analysis') 
-    st.session_state.df = st.session_state.df[st.session_state.df.answer != '-']# was df, change (7.7.23 4:14)
+    df = df[df.answer != '-']
+    col2.markdown(f'Data shape: {df.shape}, {st.session_state.df.shape}') 
 
     refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
     if refresh_all_filters:
