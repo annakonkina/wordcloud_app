@@ -220,12 +220,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     col2.markdown(f'Nb of respondents in the data: {st.session_state.df.uid.nunique()}') #ok
     col2.markdown(f'Shape of current data: {st.session_state.df.shape}') #ok
 
-
-    refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
-    if refresh_all_filters:
-        st.session_state.df_filtered = st.session_state.df.copy()
-
-
     # lock the options in the first run
     if 'nb_cols' not in st.session_state and 'df_cols' not in st.session_state:
         st.session_state.nb_cols = len([i for i in st.session_state.df.columns if i not in ['uid', 'answer']])
@@ -236,104 +230,115 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         nb_cols = st.session_state.nb_cols
         df_cols = st.session_state.df_cols
 
-    for i in range(nb_cols):
-        if not any(' | ' in str(i) for i in st.session_state.df[df_cols[i]].unique()):
-            globals()[f'{i}_options'] = st.session_state.df[df_cols[i]].unique().tolist()
-        else:
-            options_ = list(itertools.chain.from_iterable([a.split(' | ') 
-                                for a in set([i for i in st.session_state.df[df_cols[i]].unique()])]))
-            globals()[f'{i}_options'] = [*set(options_)]
-        # adding MULTISELECT for the specific breakout/question:
-        globals()[f'{i}_selection'] = col1.multiselect(f'{df_cols[i]}:',
-                                globals()[f'{i}_options'],
-                                default = globals()[f'{i}_options'],
-                                label_visibility = "hidden")
+    col2.markdown(nb_cols, df_cols)
+
+
+    # refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
+    # if refresh_all_filters:
+    #     st.session_state.df_filtered = st.session_state.df.copy()
+
+
+    
+
+    # for i in range(nb_cols):
+    #     if not any(' | ' in str(i) for i in st.session_state.df[df_cols[i]].unique()):
+    #         globals()[f'{i}_options'] = st.session_state.df[df_cols[i]].unique().tolist()
+    #     else:
+    #         options_ = list(itertools.chain.from_iterable([a.split(' | ') 
+    #                             for a in set([i for i in st.session_state.df[df_cols[i]].unique()])]))
+    #         globals()[f'{i}_options'] = [*set(options_)]
+
+    #     # adding MULTISELECT for the specific breakout/question:
+    #     globals()[f'{i}_selection'] = col1.multiselect(f'{df_cols[i]}:',
+    #                             globals()[f'{i}_options'],
+    #                             default = globals()[f'{i}_options'],
+    #                             label_visibility = "hidden")
         
-    # --- FILTER DATAFRAME BASED ON SELECTION
-    mask = []
-    for i in range(nb_cols):
-        if not any(' | ' in str(i) for i in st.session_state.df[df_cols[i]].unique()):
-            mask.append((st.session_state.df[df_cols[i]].isin(globals()[f'{i}_selection'])))
-        else:
-            multi_mask = []
-            for opt in globals()[f'{i}_selection']:
-                multi_mask.append((st.session_state.df[df_cols[i]].str.contains(opt)))
-            mask.append(multi_mask)
+    # # --- FILTER DATAFRAME BASED ON SELECTION
+    # mask = []
+    # for i in range(nb_cols):
+    #     if not any(' | ' in str(i) for i in st.session_state.df[df_cols[i]].unique()):
+    #         mask.append((st.session_state.df[df_cols[i]].isin(globals()[f'{i}_selection'])))
+    #     else:
+    #         multi_mask = []
+    #         for opt in globals()[f'{i}_selection']:
+    #             multi_mask.append((st.session_state.df[df_cols[i]].str.contains(opt)))
+    #         mask.append(multi_mask)
             
-    # df_filtered = df.copy()
-    st.session_state.df_filtered = st.session_state.df.copy()
+    # # df_filtered = df.copy()
+    # st.session_state.df_filtered = st.session_state.df.copy()
 
-    # ADD df_filtered to the current session state:
-    if 'df_filtered' not in st.session_state:
-        st.session_state.df_filtered = df.copy() #was df_filtered.copy()
+    # # ADD df_filtered to the current session state:
+    # if 'df_filtered' not in st.session_state:
+    #     st.session_state.df_filtered = df.copy() #was df_filtered.copy()
     
 
-    #here df_filtered is still ok
+    # #here df_filtered is still ok
 
-    for cond in mask:
-        if type(cond) == list:
-            cond_multi = pd.concat(cond, axis=1)
-            cond_x = cond_multi.any(axis='columns')
-            df_filtered_x = st.session_state.df_filtered[cond_x]#was df_filtered
-            # st.session_state.df_filtered = df_filtered_x
-        else:
-            df_filtered_x = st.session_state.df_filtered[cond]#was df_filtered
-            # st.session_state.df_filtered = df_filtered_x
-
-
-    number_of_result = df_filtered_x.shape[0]
-    col2.markdown(f'**Available results:** {number_of_result}')
+    # for cond in mask:
+    #     if type(cond) == list:
+    #         cond_multi = pd.concat(cond, axis=1)
+    #         cond_x = cond_multi.any(axis='columns')
+    #         df_filtered_x = st.session_state.df_filtered[cond_x]#was df_filtered
+    #         # st.session_state.df_filtered = df_filtered_x
+    #     else:
+    #         df_filtered_x = st.session_state.df_filtered[cond]#was df_filtered
+    #         # st.session_state.df_filtered = df_filtered_x
 
 
-    stop_words = set(stopwords.words(st.session_state.language))
+    # number_of_result = df_filtered_x.shape[0]
+    # col2.markdown(f'**Available results:** {number_of_result}')
 
-    if len(st.session_state.stopwords_to_add) > 0:
-        stop_words.update(st.session_state.stopwords_to_add)
 
-    if len(st.session_state.stopwords_to_remove) > 0:
-        stop_words = stop_words - st.session_state.stopwords_to_remove
+    # stop_words = set(stopwords.words(st.session_state.language))
 
-    st.session_state.stop_words = stop_words
+    # if len(st.session_state.stopwords_to_add) > 0:
+    #     stop_words.update(st.session_state.stopwords_to_add)
 
-    # ---- ADD WORDCLOUD
+    # if len(st.session_state.stopwords_to_remove) > 0:
+    #     stop_words = stop_words - st.session_state.stopwords_to_remove
+
+    # st.session_state.stop_words = stop_words
+
+    # # ---- ADD WORDCLOUD
     
-    corpus = df_filtered_x.answer.unique().tolist() #was df_filtered, change 07.07.23 16:34
-    corpus = [i.lower() for i in corpus]
-    text = ' '.join(corpus)
-    col2.markdown(f'Total nb of words: {len(text)}')
+    # corpus = df_filtered_x.answer.unique().tolist() #was df_filtered, change 07.07.23 16:34
+    # corpus = [i.lower() for i in corpus]
+    # text = ' '.join(corpus)
+    # col2.markdown(f'Total nb of words: {len(text)}')
 
-    for i in ['-', '  ', '’', "\'"]: # drop extra symbols
-        if i != '’':
-            text = text.replace(i, '')
-        else:
-            text = text.replace(i, "'")
-    # st.text(text)
-    text = text.translate(str.maketrans('', '', string.punctuation))
+    # for i in ['-', '  ', '’', "\'"]: # drop extra symbols
+    #     if i != '’':
+    #         text = text.replace(i, '')
+    #     else:
+    #         text = text.replace(i, "'")
+    # # st.text(text)
+    # text = text.translate(str.maketrans('', '', string.punctuation))
 
-    # LEMMATIZE
-    try:
-        text = lemmatize_sentence(text)
-    except:
-        nltk.download('all')
-        text = lemmatize_sentence(text)
+    # # LEMMATIZE
+    # try:
+    #     text = lemmatize_sentence(text)
+    # except:
+    #     nltk.download('all')
+    #     text = lemmatize_sentence(text)
 
 
-    # Create and generate a word cloud image:
-    if 'wordcloud' not in st.session_state:    
-        with st.spinner('Wait for it...'):
-            wordcloud = calculate_wordcloud(text)
-        st.session_state.wordcloud = wordcloud
-        with st.spinner('Wait for it...'):
-            display_wordcloud(st.session_state.wordcloud)
+    # # Create and generate a word cloud image:
+    # if 'wordcloud' not in st.session_state:    
+    #     with st.spinner('Wait for it...'):
+    #         wordcloud = calculate_wordcloud(text)
+    #     st.session_state.wordcloud = wordcloud
+    #     with st.spinner('Wait for it...'):
+    #         display_wordcloud(st.session_state.wordcloud)
             
     
-    regenerate_wordcloud = col2.button('Generate wordcloud (or regenerate to refresh)')
-    if regenerate_wordcloud:
-        with st.spinner('Wait for it...'):
-            wordcloud = calculate_wordcloud(text)
-        st.session_state.wordcloud = wordcloud
-        with st.spinner('Wait for it...'):
-            display_wordcloud(st.session_state.wordcloud)
+    # regenerate_wordcloud = col2.button('Generate wordcloud (or regenerate to refresh)')
+    # if regenerate_wordcloud:
+    #     with st.spinner('Wait for it...'):
+    #         wordcloud = calculate_wordcloud(text)
+    #     st.session_state.wordcloud = wordcloud
+    #     with st.spinner('Wait for it...'):
+    #         display_wordcloud(st.session_state.wordcloud)
 
 
 
