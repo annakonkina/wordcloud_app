@@ -281,24 +281,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
     st.text(st.session_state.df_filtered.shape)
 
-    with st.form("my_form"):
-        # Every form must have a submit button.
-        submitted = st.form_submit_button("Submit filter refresh")
-        if submitted:
-            df_filtered_to_use = st.session_state.df_filtered.copy()
-            for col in st.session_state.df_cols:
-                if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
-                    globals()[f'{col}_options'] = st.session_state.df[col].unique().tolist()
-                else:
-                    options_ = list(itertools.chain.from_iterable([a.split(' | ') 
-                                        for a in set([i for i in st.session_state.df[col].unique()])]))
-                    globals()[f'{col}_options'] = [*set(options_)]
-
-                # adding MULTISELECT for the specific breakout/question:
-                globals()[f'{col}_selection'] = col1.multiselect(f'{col}:',
-                                        globals()[f'{col}_options'],
-                                        default = globals()[f'{col}_options'],
-                                        label_visibility = "collapsed")
+    
 
 
     # stop_words = set(stopwords.words(st.session_state.language))
