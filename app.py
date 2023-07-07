@@ -256,7 +256,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         else:
             multi_mask = []
             for opt in globals()[f'{col}_selection']:
-                multi_mask.append((st.session_state.df[col].str.contains(opt)))
+                multi_mask.append((st.session_state.df[col].str.contains(opt, regex=False)))
                 
             mask.append(multi_mask)
 
