@@ -266,28 +266,28 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             
     # df_filtered = df.copy()
 
-    # ADD df_filtered to the current session state:
-    if 'df_filtered' not in st.session_state:
-        st.session_state.df_filtered = st.session_state.df.copy() #was df_filtered.copy()
+    # # ADD df_filtered to the current session state:
+    # if 'df_filtered' not in st.session_state:
+    #     st.session_state.df_filtered = st.session_state.df.copy() #was df_filtered.copy()
     
-    #here df_filtered is still ok
-    index_filter = st.session_state.df_filtered.index.values.tolist()
-    st.text(len(index_filter))
-    for cond in mask:
-        if type(cond) == list:
-            cond_multi = pd.concat(cond, axis=1)
-            cond_x = cond_multi.any(axis='columns')
-            df_filtered_x = st.session_state.df_filtered[cond_x]
-            st.text(len(df_filtered_x.index.values))
-            index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
-            # st.session_state.df_filtered = df_filtered_x
-        else:
-            df_filtered_x = st.session_state.df_filtered[cond]
-            st.text(len(df_filtered_x.index.values))
-            index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
-            # st.session_state.df_filtered = df_filtered_x
-    index_filter = [*set(index_filter)]
-    st.text(len(index_filter))
+    # #here df_filtered is still ok
+    # index_filter = st.session_state.df_filtered.index.values.tolist()
+    # st.text(len(index_filter))
+    # for cond in mask:
+    #     if type(cond) == list:
+    #         cond_multi = pd.concat(cond, axis=1)
+    #         cond_x = cond_multi.any(axis='columns')
+    #         df_filtered_x = st.session_state.df_filtered[cond_x]
+    #         st.text(len(df_filtered_x.index.values))
+    #         index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
+    #         # st.session_state.df_filtered = df_filtered_x
+    #     else:
+    #         df_filtered_x = st.session_state.df_filtered[cond]
+    #         st.text(len(df_filtered_x.index.values))
+    #         index_filter = [i for i in index_filter if i in df_filtered_x.index.values.tolist()]
+    #         # st.session_state.df_filtered = df_filtered_x
+    # index_filter = [*set(index_filter)]
+    # st.text(len(index_filter))
 
     # number_of_result = df_filtered_x.shape[0]
     # col2.markdown(f'**Available results:** {number_of_result}')
