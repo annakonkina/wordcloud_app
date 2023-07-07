@@ -264,6 +264,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     
 
     #here df_filtered is still ok
+    col2.markdown(f'MASK? >> {mask}')
 
     for cond in mask:
         if type(cond) == list:
