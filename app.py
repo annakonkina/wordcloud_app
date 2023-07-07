@@ -256,11 +256,12 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
                 multi_mask.append((df[df_cols[i]].str.contains(opt)))
             mask.append(multi_mask)
             
-    df_filtered = df.copy()
+    # df_filtered = df.copy()
 
     # ADD df_filtered to the current session state:
     if 'df_filtered' not in st.session_state:
-        st.session_state.df_filtered = df_filtered.copy()
+        st.session_state.df_filtered = df.copy() #was df_filtered.copy()
+    
 
     #here df_filtered is still ok
 
