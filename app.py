@@ -230,7 +230,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
         nb_cols = st.session_state.nb_cols
         df_cols = st.session_state.df_cols
 
-    col2.markdown(nb_cols, df_cols)
+    col2.markdown(st.session_state.nb_cols, st.session_state.df_cols)
 
 
     # refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
