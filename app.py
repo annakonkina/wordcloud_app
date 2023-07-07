@@ -267,7 +267,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     
     #here df_filtered is still ok
     index_filter = []
-    st.text(len(uids_filter))
+    st.text(len(index_filter))
     for cond in mask:
         if type(cond) == list:
             cond_multi = pd.concat(cond, axis=1)
@@ -282,7 +282,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             index_filter += df_filtered_x.index.values.tolist()
             # st.session_state.df_filtered = df_filtered_x
     index_filter = [*set(index_filter)]
-    st.text(len(uids_filter))
+    st.text(len(index_filter))
 
     # number_of_result = df_filtered_x.shape[0]
     # col2.markdown(f'**Available results:** {number_of_result}')
