@@ -253,6 +253,8 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     for col in st.session_state.df_cols:
         if not any(' | ' in str(i) for i in st.session_state.df[col].unique()):
             mask.append((st.session_state.df[col].isin(globals()[f'{col}_selection'])))
+            st.text(col)
+            st.text((st.session_state.df[col].isin(globals()[f'{col}_selection'])))
         else:
             multi_mask = []
             for opt in globals()[f'{col}_selection']:
