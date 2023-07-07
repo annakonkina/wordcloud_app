@@ -217,6 +217,7 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     st.session_state.df['answer'] = st.session_state.df['answer'].fillna('-')
     st.session_state.df = st.session_state.df[st.session_state.df.answer != '-']
     col2.markdown(f'Nb of respondents in the data: {st.session_state.df.uid.nunique()}') #ok
+    col2.markdown(f'Shape of current data: {st.session_state.df.shape}') #ok
 
 
     refresh_all_filters = st.button('Refresh all the filters', key  = 'refresh_filters')
@@ -266,12 +267,6 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     
 
     #here df_filtered is still ok
-    for i in range(nb_cols):
-        i_ = globals()[f'{i}_selection']#f.e. 'Male' or '40 - 55'
-        col2.markdown(f'{i_}')
-        
-
-    
 
     for cond in mask:
         if type(cond) == list:
