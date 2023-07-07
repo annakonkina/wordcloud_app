@@ -281,58 +281,59 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
     col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
     st.text(st.session_state.df_filtered.shape)
 
+    # till now al the filters are working fine. Without reloading the page we can play with them, removing and choosing 
+    # again and they are changing the available results back to the original
+
     
+    stop_words = set(stopwords.words(st.session_state.language))
 
+    if len(st.session_state.stopwords_to_add) > 0:
+        stop_words.update(st.session_state.stopwords_to_add)
 
-    # stop_words = set(stopwords.words(st.session_state.language))
+    if len(st.session_state.stopwords_to_remove) > 0:
+        stop_words = stop_words - st.session_state.stopwords_to_remove
 
-    # if len(st.session_state.stopwords_to_add) > 0:
-    #     stop_words.update(st.session_state.stopwords_to_add)
+    st.session_state.stop_words = stop_words
 
-    # if len(st.session_state.stopwords_to_remove) > 0:
-    #     stop_words = stop_words - st.session_state.stopwords_to_remove
-
-    # st.session_state.stop_words = stop_words
-
-    # # ---- ADD WORDCLOUD
+    # ---- ADD WORDCLOUD
     
-    # corpus = df_filtered_x.answer.unique().tolist() #was df_filtered, change 07.07.23 16:34
-    # corpus = [i.lower() for i in corpus]
-    # text = ' '.join(corpus)
-    # col2.markdown(f'Total nb of words: {len(text)}')
+    corpus = df_filtered_to_use.answer.unique().tolist() #was df_filtered, change 07.07.23 16:34
+    corpus = [i.lower() for i in corpus]
+    text = ' '.join(corpus)
+    col2.markdown(f'Total nb of words: {len(text)}')
 
-    # for i in ['-', '  ', '’', "\'"]: # drop extra symbols
-    #     if i != '’':
-    #         text = text.replace(i, '')
-    #     else:
-    #         text = text.replace(i, "'")
-    # # st.text(text)
-    # text = text.translate(str.maketrans('', '', string.punctuation))
+    for i in ['-', '  ', '’', "\'"]: # drop extra symbols
+        if i != '’':
+            text = text.replace(i, '')
+        else:
+            text = text.replace(i, "'")
+    # st.text(text)
+    text = text.translate(str.maketrans('', '', string.punctuation))
 
-    # # LEMMATIZE
-    # try:
-    #     text = lemmatize_sentence(text)
-    # except:
-    #     nltk.download('all')
-    #     text = lemmatize_sentence(text)
+    # LEMMATIZE
+    try:
+        text = lemmatize_sentence(text)
+    except:
+        nltk.download('all')
+        text = lemmatize_sentence(text)
 
 
-    # # Create and generate a word cloud image:
-    # if 'wordcloud' not in st.session_state:    
-    #     with st.spinner('Wait for it...'):
-    #         wordcloud = calculate_wordcloud(text)
-    #     st.session_state.wordcloud = wordcloud
-    #     with st.spinner('Wait for it...'):
-    #         display_wordcloud(st.session_state.wordcloud)
+    # Create and generate a word cloud image:
+    if 'wordcloud' not in st.session_state:    
+        with st.spinner('Wait for it...'):
+            wordcloud = calculate_wordcloud(text)
+        st.session_state.wordcloud = wordcloud
+        with st.spinner('Wait for it...'):
+            display_wordcloud(st.session_state.wordcloud)
             
     
-    # regenerate_wordcloud = col2.button('Generate wordcloud (or regenerate to refresh)')
-    # if regenerate_wordcloud:
-    #     with st.spinner('Wait for it...'):
-    #         wordcloud = calculate_wordcloud(text)
-    #     st.session_state.wordcloud = wordcloud
-    #     with st.spinner('Wait for it...'):
-    #         display_wordcloud(st.session_state.wordcloud)
+    regenerate_wordcloud = col2.button('Generate wordcloud (or regenerate to refresh)')
+    if regenerate_wordcloud:
+        with st.spinner('Wait for it...'):
+            wordcloud = calculate_wordcloud(text)
+        st.session_state.wordcloud = wordcloud
+        with st.spinner('Wait for it...'):
+            display_wordcloud(st.session_state.wordcloud)
 
 
 
