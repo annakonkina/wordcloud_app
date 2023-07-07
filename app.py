@@ -280,9 +280,11 @@ if 'uploaded_file' in st.session_state and 'sheet_name' in st.session_state:
             # st.session_state.df_filtered = df_filtered_x
     index_filter = [*set(index_filter)]
     st.text(len(index_filter))
+
     df_filtered_to_use = st.session_state.df_filtered[st.session_state.df_filtered.index.isin(index_filter)]
     
     col2.markdown(f'**Available results:** {len(df_filtered_to_use)}')
+    st.text(st.session_state.df_filtered.shape)
 
 
     # stop_words = set(stopwords.words(st.session_state.language))
